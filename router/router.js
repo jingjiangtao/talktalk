@@ -175,7 +175,6 @@ exports.myTalklist = function(req, res, next){
 //删除说说业务
 exports.deleteTalk = function(req, res, next){
     var _id = req.query._id;
-
     db.deleteMany('talkList', {
         '_id':ObjectID(_id)
     },function(err, result){
