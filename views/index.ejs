@@ -142,18 +142,21 @@
                             <i class="glyphicon glyphicon-thumbs-up"></i>
                             <span><%=listResult[i].zanNum%></span>
                         </a>
+						<!--评论面板小图标-->
                         <a href="javascript:;" data-toggle="collapse" data-target="#collapsePanel<%=i%>"
                            aria-expanded="false" aria-controls="collapsePanel" class="comment-a">
                             <i class="glyphicon glyphicon-comment"></i>
                             <span class="comment-number"><%=listResult[i].commentNum%></span>
                         </a>
                     </span>
+					<!--评论面板-->
                     <div class="collapse comment-coll" id="collapsePanel<%=i%>">
                         <div class="comment-content">
                             <div>
                                 <textarea maxlength="200" class="form-control reply-textarea" rows="3" placeholder=""></textarea>
                                 <button type="button" class="btn btn-success pull-right replay-btn">回复</button>
                             </div>
+							<!--评论列表-->
                             <ul class="list-group comment-list">
                                 <%for(var j=0;j<listResult[i].commentContent.length;j++){%>
                                 <li class="list-group-item">
