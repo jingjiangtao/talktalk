@@ -1,4 +1,4 @@
-# talktalk
+# 小小说说
 这个项目是我为了学node.js写的，后端用的是node.js
 用到的框架有后端框架express，前端的jquery，bootstrap
 还有ejs模板引擎
