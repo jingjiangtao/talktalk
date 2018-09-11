@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b3fb8e39-79cf-4a34-a701-4c3d8042e39d" name="Default Changelist" comment="修改了router.js">
+    <list default="true" id="b3fb8e39-79cf-4a34-a701-4c3d8042e39d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/avatar/jing/jing.png" beforeDir="false" afterPath="$PROJECT_DIR$/avatar/jing/jing.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/avatar/景江涛/景江涛.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/js/jquery-3.3.1.min.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/talktalkDB/WiredTiger.turtle" beforeDir="false" afterPath="$PROJECT_DIR$/talktalkDB/WiredTiger.turtle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/talktalkDB/WiredTiger.wt" beforeDir="false" afterPath="$PROJECT_DIR$/talktalkDB/WiredTiger.wt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/talktalkDB/collection-0-1309279094116119109.wt" beforeDir="false" afterPath="$PROJECT_DIR$/talktalkDB/collection-0-1309279094116119109.wt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/talktalkDB/collection-2-2971369656733340875.wt" beforeDir="false" afterPath="$PROJECT_DIR$/talktalkDB/collection-2-2971369656733340875.wt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/talktalkDB/collection-3-6255927581247199553.wt" beforeDir="false" afterPath="$PROJECT_DIR$/talktalkDB/collection-3-6255927581247199553.wt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/talktalkDB/index-0--981539070815848976.wt" beforeDir="false" afterPath="$PROJECT_DIR$/talktalkDB/index-0--981539070815848976.wt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/talktalkDB/index-1-1309279094116119109.wt" beforeDir="false" afterPath="$PROJECT_DIR$/talktalkDB/index-1-1309279094116119109.wt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/talktalkDB/index-3-2971369656733340875.wt" beforeDir="false" afterPath="$PROJECT_DIR$/talktalkDB/index-3-2971369656733340875.wt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/talktalkDB/journal/WiredTigerLog.0000000005" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/talktalkDB/mongod.lock" beforeDir="false" afterPath="$PROJECT_DIR$/talktalkDB/mongod.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/talktalkDB/sizeStorer.wt" beforeDir="false" afterPath="$PROJECT_DIR$/talktalkDB/sizeStorer.wt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/index.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/index.ejs" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -114,18 +129,19 @@
       <usages-collector id="statistics.lifecycle.project">
         <counts>
           <entry key="project.closed" value="1" />
+          <entry key="project.open.time.1" value="1" />
           <entry key="project.open.time.18" value="1" />
-          <entry key="project.opened" value="1" />
+          <entry key="project.opened" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="txt" value="24" />
+          <entry key="txt" value="47" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="24" />
+          <entry key="PLAIN_TEXT" value="47" />
         </counts>
       </usages-collector>
     </session>
@@ -134,14 +150,14 @@
     <favorites_list name="talktalk" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="vertical" split-proportion="0.51724136">
+    <splitter split-orientation="vertical" split-proportion="0.16462736">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/router/router.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="99">
-                  <caret line="73" column="27" lean-forward="true" selection-start-line="73" selection-start-column="27" selection-end-line="73" selection-end-column="27" />
+                <state relative-caret-position="7">
+                  <caret line="73" column="27" selection-start-line="73" selection-start-column="27" selection-end-line="73" selection-end-column="27" />
                 </state>
               </provider>
             </entry>
@@ -171,7 +187,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/public/js/index-page.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="7268">
+                <state relative-caret-position="154">
                   <caret line="426" column="44" selection-start-line="426" selection-start-column="44" selection-end-line="426" selection-end-column="44" />
                   <folding>
                     <element signature="e#95#887#0" />
@@ -188,8 +204,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/views/index.ejs">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="26">
-                  <caret line="135" column="51" selection-start-line="135" selection-start-column="51" selection-end-line="135" selection-end-column="51" />
+                <state relative-caret-position="490">
+                  <caret line="298" column="85" selection-start-line="298" selection-start-column="85" selection-end-line="298" selection-end-column="85" />
                 </state>
               </provider>
             </entry>
@@ -251,9 +267,9 @@
         <option value="$PROJECT_DIR$/views/err.ejs" />
         <option value="$PROJECT_DIR$/public/js/index-page.js" />
         <option value="$PROJECT_DIR$/public/css/jumbotron.css" />
-        <option value="$PROJECT_DIR$/views/index.ejs" />
         <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/router/router.js" />
+        <option value="$PROJECT_DIR$/views/index.ejs" />
       </list>
     </option>
   </component>
@@ -298,6 +314,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -308,13 +325,23 @@
             <path>
               <item name="talktalk" type="b2602c69:ProjectViewProjectNode" />
               <item name="talktalk" type="462c0819:PsiDirectoryNode" />
+              <item name="avatar" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="talktalk" type="b2602c69:ProjectViewProjectNode" />
+              <item name="talktalk" type="462c0819:PsiDirectoryNode" />
+              <item name="avatar" type="462c0819:PsiDirectoryNode" />
+              <item name="jing" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="talktalk" type="b2602c69:ProjectViewProjectNode" />
+              <item name="talktalk" type="462c0819:PsiDirectoryNode" />
               <item name="views" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -397,6 +424,7 @@
       <workItem from="1536571654477" duration="414000" />
       <workItem from="1536584038327" duration="639000" />
       <workItem from="1536627764872" duration="2381000" />
+      <workItem from="1536633153627" duration="2090000" />
     </task>
     <task id="LOCAL-00001" summary="修改了router.js">
       <created>1536631717151</created>
@@ -405,11 +433,18 @@
       <option name="project" value="LOCAL" />
       <updated>1536631717151</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="第二次修改了workspace.xml">
+      <created>1536633209964</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1536633209964</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="171462000" />
+    <option name="totallyTimeSpent" value="173552000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -479,7 +514,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="修改了router.js" />
-    <option name="LAST_COMMIT_MESSAGE" value="修改了router.js" />
+    <MESSAGE value="第二次修改了workspace.xml" />
+    <option name="LAST_COMMIT_MESSAGE" value="第二次修改了workspace.xml" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/avatar/default.jpg">
@@ -535,7 +571,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/views/header.ejs" />
-    <entry file="file://$PROJECT_DIR$/avatar/景江涛/景江涛.png">
+    <entry file="file://$PROJECT_DIR$/avatar/jing/jing.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/avatar/yangshu/yangshu.png">
@@ -596,6 +632,13 @@
     <entry file="file://$PROJECT_DIR$/avatar/jing/jing.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/router/router.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7">
+          <caret line="73" column="27" selection-start-line="73" selection-start-column="27" selection-end-line="73" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/public/css/jumbotron.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1495">
@@ -612,7 +655,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/js/index-page.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7268">
+        <state relative-caret-position="154">
           <caret line="426" column="44" selection-start-line="426" selection-start-column="44" selection-end-line="426" selection-end-column="44" />
           <folding>
             <element signature="e#95#887#0" />
@@ -627,15 +670,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/views/index.ejs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="26">
-          <caret line="135" column="51" selection-start-line="135" selection-start-column="51" selection-end-line="135" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/router/router.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="99">
-          <caret line="73" column="27" lean-forward="true" selection-start-line="73" selection-start-column="27" selection-end-line="73" selection-end-column="27" />
+        <state relative-caret-position="490">
+          <caret line="298" column="85" selection-start-line="298" selection-start-column="85" selection-end-line="298" selection-end-column="85" />
         </state>
       </provider>
     </entry>
