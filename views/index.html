@@ -15,7 +15,6 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <!--<link href="http://www.jq22.com/jquery/font-awesome.4.6.0.css" rel="stylesheet">-->
     <link href="/css/jumbotron.css" rel="stylesheet">
     <link href="/css/cropper.min.css" rel="stylesheet">
     <link href="/css/sitelogo.css" rel="stylesheet">
@@ -38,9 +37,9 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav nav-list">
-                <li class="active"><a href="/">全部说说</a></li>
-                <li><a href="javascript:;" id="my-talk-btn">我的说说</a></li>
-                <li><a href="javascript:;" id="member-list-btn">成员列表</a></li>
+                <li class="active"><a v-on:click="allTalk" href="javascript:;">全部说说</a></li>
+                <li><a v-on:click="myTalk" href="javascript:;">我的说说</a></li>
+                <li><a v-on:click="members" href="javascript:;">成员列表</a></li>
             </ul>
 
             <div v-if="unlogin" class="navbar-form navbar-right">
@@ -64,7 +63,7 @@
                 </li>
                 <li><a href="#" class="own-username">{{username}}</a></li>
                 <li><a href="#" data-toggle="modal" data-target="#modify-profile">修改个人资料</a></li>
-                <li><a href="#" id="btn-quit">退出登录</a></li>
+                <li><a href="#" v-on:click="quitMethod" id="btn-quit">退出登录</a></li>
             </ul>
 
         </div><!--/.navbar-collapse -->
@@ -107,14 +106,14 @@
             </footer>
         </div>
     </div>
-    <!--所有说说列表-->
+
 <div v-else>
-    <div class="container main-container">
-    <div class="jumbotron text-content-bg">
+    <div v-if="mainContainer" class="container main-container">
+        <div class="jumbotron text-content-bg">
         <div class="container">
             <div class="row">
-                <textarea v-model.trim="inputStatusContent" v-on:keyup="changeLastNum" id="text-content" maxlength="500" class="form-control col-lg-12" rows="7"
-                          placeholder="有什么想和大家分享的？"></textarea>
+                    <textarea v-model.trim="inputStatusContent" v-on:keyup="changeLastNum" id="text-content" maxlength="500" class="form-control col-lg-12" rows="7"
+                              placeholder="有什么想和大家分享的？"></textarea>
                 <span id="last-num" class="col-lg-1 col-lg-offset-10">{{lastNum}}</span>
                 <button v-on:click="sendStatus" id="btn-send" type="button" class="btn btn-success col-lg-1">发布</button>
             </div>
@@ -122,10 +121,67 @@
         </div>
 
     </div>
-    <div class="container">
-        <div class="panel-list">
+        <div class="container">
+            <div class="panel-list">
 
-            <div v-for="(result, index) in listResult" class="panel panel-default">
+                <div v-for="(result, index) in listResult" class="panel panel-default">
+                    <span class="_id">{{result._id}}</span>
+                    <div class="panel-heading">
+                        <img v-bind:src="'/avatar/'+result.avatarPath" class="img-circle avatar-img panel-avatar">
+                        <span class="panel-username">{{result.username}}</span>
+                    </div>
+                    <div class="panel-body">
+                        {{result.talkContent}}
+                    </div>
+                    <div class="panel-footer">
+                        <span class="time">{{(new Date(result.time)).toLocaleString()}}</span>
+                        <span class="icon-two pull-right">
+                            <a href="javascript:;" v-bind:class="isZan(result)">
+                                <i class="glyphicon glyphicon-thumbs-up"></i>
+                                <span>{{result.zanNum}}</span>
+                            </a>
+                            <!--评论面板小图标-->
+                            <a href="javascript:;" data-toggle="collapse" v-bind:data-target="'#collapsePanel'+index"
+                               aria-expanded="false" aria-controls="collapsePanel" class="comment-a">
+                                <i class="glyphicon glyphicon-comment"></i>
+                                <span class="comment-number">{{result.commentNum}}</span>
+                            </a>
+                        </span>
+                        <!--评论面板-->
+                        <div class="collapse comment-coll" v-bind:id="'collapsePanel'+index">
+                            <div class="comment-content">
+                                <div>
+                                    <textarea maxlength="200" class="form-control reply-textarea" rows="3" placeholder=""></textarea>
+                                    <button type="button" class="btn btn-success pull-right replay-btn">回复</button>
+                                </div>
+                                <!--评论列表-->
+                                <ul class="list-group comment-list">
+
+                                    <li v-for="comment in result.commentContent" class="list-group-item">
+                                        <a class="reply-user" href="javascript:;">{{comment.replyUser}}：</a>
+                                        <span class="reply-content">{{comment.replyContent}}</span>
+                                        <div class="reply-time">{{comment.replyTime.toLocaleString()}}</div>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div> <!-- /container -->
+        <hr>
+        <div>
+            <footer>
+                <p>&copy; 2018 Company, Inc.</p>
+            </footer>
+        </div>
+    </div>
+    <!--我的说说列表-->
+    <div v-if="myTalklist" class="container my-talklist">
+        <div class="panel-list">
+            <div v-for="(result, index) in myTalkResult" class="panel panel-primary">
                 <span class="_id">{{result._id}}</span>
                 <div class="panel-heading">
                     <img v-bind:src="'/avatar/'+result.avatarPath" class="img-circle avatar-img panel-avatar">
@@ -135,33 +191,31 @@
                     {{result.talkContent}}
                 </div>
                 <div class="panel-footer">
-                    <span class="time">{{result.time.toLocaleString()}}</span>
+                    <span class="time">{{(new Date(result.time)).toLocaleString()}}</span>
                     <span class="icon-two pull-right">
-                        <a href="javascript:;" v-bind:class="isZan(result)">
+                        <a href="javascript:;" class="delete-talk">删除</a>
+                        <a href="javascript:;" class="zan-number">
                             <i class="glyphicon glyphicon-thumbs-up"></i>
                             <span>{{result.zanNum}}</span>
                         </a>
-						<!--评论面板小图标-->
+                        <!--评论面板小图标-->
                         <a href="javascript:;" data-toggle="collapse" v-bind:data-target="'#collapsePanel'+index"
                            aria-expanded="false" aria-controls="collapsePanel" class="comment-a">
                             <i class="glyphicon glyphicon-comment"></i>
                             <span class="comment-number">{{result.commentNum}}</span>
                         </a>
                     </span>
-					<!--评论面板-->
+                    <!--评论面板-->
                     <div class="collapse comment-coll" v-bind:id="'collapsePanel'+index">
                         <div class="comment-content">
-                            <div>
-                                <textarea maxlength="200" class="form-control reply-textarea" rows="3" placeholder=""></textarea>
-                                <button type="button" class="btn btn-success pull-right replay-btn">回复</button>
-                            </div>
-							<!--评论列表-->
+
+                            <!--评论列表-->
                             <ul class="list-group comment-list">
 
                                 <li v-for="comment in result.commentContent" class="list-group-item">
                                     <a class="reply-user" href="javascript:;">{{comment.replyUser}}：</a>
                                     <span class="reply-content">{{comment.replyContent}}</span>
-                                    <div class="reply-time">{{comment.replyTime.toLocaleString()}}</div>
+                                    <div class="reply-time">{{(new Date(comment.replyTime)).toLocaleString()}}</div>
                                 </li>
 
                             </ul>
@@ -169,36 +223,27 @@
                     </div>
                 </div>
             </div>
-
         </div>
-    </div> <!-- /container -->
-    <hr>
-    <div>
-        <footer>
-            <p>&copy; 2018 Company, Inc.</p>
-        </footer>
+        <hr>
+        <div>
+            <footer>
+                <p>&copy; 2018 Company, Inc.</p>
+            </footer>
+        </div>
     </div>
-</div>
-    <!--我的说说列表-->
-    <div class="container my-talklist">
-    <div class="panel-list"></div>
-    <hr>
-    <div>
-        <footer>
-            <p>&copy; 2018 Company, Inc.</p>
-        </footer>
-    </div>
-</div>
+
     <!--成员列表    -->
-    <div class="container member-list">
-    <div class="panel-list"></div>
-    <hr>
-    <div>
-        <footer>
-            <p>&copy; 2018 Company, Inc.</p>
-        </footer>
+    <div v-if="memberlist" class="container member-list">
+        <div class="panel-list">
+            成员
+        </div>
+        <hr>
+        <div>
+            <footer>
+                <p>&copy; 2018 Company, Inc.</p>
+            </footer>
+        </div>
     </div>
-</div>
 </div>
 
 

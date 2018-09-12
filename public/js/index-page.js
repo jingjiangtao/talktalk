@@ -3,14 +3,23 @@ $(function(){
     var indexShow = new Vue({
         el:'#show-index',
         data: {
+            //页面初始化参数
             unlogin:true,
             username:'',
             avatar:'',
             listResult: [],
+            //登陆注册输入框参数
             inputUsername:'',
             inputPassword:'',
+            //发表动态文本框参数
             inputStatusContent:'',
-            lastNum:500
+            lastNum:500,
+            // 控制三个页面切换参数
+            mainContainer:true,
+            myTalklist:false,
+            memberlist:false,
+            // 我的说说页面数据
+            myTalkResult:[]
         },
         created: function () {
             var _this = this;
@@ -100,12 +109,22 @@ $(function(){
                 if(this.inputStatusContent.length==0){
                     return;
                 }
+                var _this = this;
                 $.get('/sendstate', {
                     'talkContent': this.inputStatusContent
                 }, function(data, status){
                     if(data.result==1){
-                        this.inputStatusContent='';
-                        window.location.href = '/';
+                        _this.listResult.unshift({
+                            avatarPath:'default.jpg',
+                            commentContent:[],
+                            commentNum:0,
+                            talkContent:_this.inputStatusContent,
+                            time:(new Date()),
+                            username:_this.username,
+                            zanNum:0,
+                            zanPerson:[]
+                        });
+                        _this.inputStatusContent='';
                     }else{
 
                     }
@@ -115,6 +134,44 @@ $(function(){
             changeLastNum: function(){
                 var size = this.inputStatusContent.length;
                 this.lastNum = 500 - size;
+            },
+            // 退出账户
+            quitMethod: function () {
+                $.get('/quit',function(data, status){
+                    if(data.result==1){
+                        window.location.href = '/';
+                    }else{
+                        alertDanger('错误', '退出失败');
+                    }
+                });
+            },
+
+            // 显示所有说说页面
+            allTalk: function () {
+                this.mainContainer = true;
+                this.myTalklist = false;
+                this.memberlist = false;
+            },
+
+            // 显示我的说说页面
+            myTalk: function () {
+                var _this = this;
+                _this.mainContainer = false;
+                _this.memberlist = false;
+                _this.myTalklist = true;
+                $.get('/mytalklist', function(data, status) {
+                    if (data.result == 1) {
+                        // 查询成功
+                        _this.myTalkResult = data.data;
+                    }
+                });
+            },
+
+            // 显示成员列表页面
+            members: function () {
+                this.mainContainer = false;
+                this.myTalklist = false;
+                this.memberlist = true;
             }
         }
     });
@@ -122,12 +179,7 @@ $(function(){
 
     /*下面是导航栏的js*/
 
-    // 回车键触发登录按钮
-    $(document).keyup(function(event){
-        if(event.keyCode ==13){
-            $("#btn-login").trigger("click");
-        }
-    });
+
     // 修改密码模态框的确定按钮点击
     $('#btn-updata-pwd').on('click', function(){
         var oldPwd = $('#old-pwd').val();
@@ -176,16 +228,6 @@ $(function(){
         $('.modal-alert > span').text(span);
     }
 
-    //退出登录按钮
-    $('#btn-quit').on('click', function(){
-        $.get('/quit',function(data, status){
-            if(data.result==1){
-                window.location.href = '/';
-            }else{
-                alertDanger('错误', '退出失败');
-            }
-        });
-    });
 
     // 登录注册时出错的警告框
     function alertDanger(strong, span){
@@ -194,22 +236,22 @@ $(function(){
         $('.alert').addClass('alert-danger').fadeIn();
     }
 
-    $('.nav-list > li').on('click', function(){
-        $('.navbar-right > li').removeClass('active');
-        $(this).siblings('li').removeClass('active');
-        $(this).addClass('active');
-    });
-
-    $('.navbar-right > li').on('click', function(){
-        $('.nav-list > li').removeClass('active');
-        $(this).siblings('li').removeClass('active');
-        $(this).addClass('active');
-    });
-
-    $('#modi-avatar').on('click', function(){
-        $('#modify-profile').modal('hide');
-        $('#avatar-modal').modal('show');
-    });
+    // $('.nav-list > li').on('click', function(){
+    //     $('.navbar-right > li').removeClass('active');
+    //     $(this).siblings('li').removeClass('active');
+    //     $(this).addClass('active');
+    // });
+    //
+    // $('.navbar-right > li').on('click', function(){
+    //     $('.nav-list > li').removeClass('active');
+    //     $(this).siblings('li').removeClass('active');
+    //     $(this).addClass('active');
+    // });
+    //
+    // $('#modi-avatar').on('click', function(){
+    //     $('#modify-profile').modal('hide');
+    //     $('#avatar-modal').modal('show');
+    // });
 
     // 上传修改头像
     //做个下简易的验证  大小 格式
@@ -272,13 +314,13 @@ $(function(){
 
     /*下面是主页面的js*/
     //给自己的动态添加样式
-    $('.panel-username').each(function(index, value){
-        if($(value).text()==$('.own-username').text()){
-            // $(value).parent().addClass('own-talk');
-            $(value).parents('.panel').removeClass('panel-default');
-            $(value).parents('.panel').addClass('panel-primary');
-        }
-    });
+    // $('.panel-username').each(function(index, value){
+    //     if($(value).text()==$('.own-username').text()){
+    //         // $(value).parent().addClass('own-talk');
+    //         $(value).parents('.panel').removeClass('panel-default');
+    //         $(value).parents('.panel').addClass('panel-primary');
+    //     }
+    // });
 
 
     // 点赞图标点击事件
@@ -359,128 +401,66 @@ $(function(){
     $('#avatar-btn').on('click', function(){
         $('#my-talk-btn').trigger('click');
     });
-    // 我的说说按钮点击
-    $('#my-talk-btn').on('click', function(){
-        $('.main-container, .member-list').hide();
-        $('.my-talklist').show();
-        $('.my-talklist > .panel-list').empty();
-        $.get('/mytalklist', function(data, status){
-            if(data.result == 1){
-                // 查询成功
-                var result = data.data;
-                if(result.length==0){
-                    $('.my-talklist > .panel-list').append('<h2>还未发表说说</h2>');
-                    return;
-                }
 
-                for(var i=0;i<result.length;i++){
-                    $('.my-talklist > .panel-list').append(
-                        '<div class="panel panel-primary">' +
-                        '        <span class="_id">'+result[i]._id+'</span>'+
-                        '        <div class="panel-heading">' +
-                        '            <img src="/avatar/'+result[i].avatarPath+'" class="img-circle avatar-img panel-avatar">' +
-                        '            <span class="panel-username">'+result[i].username+'</span>' +
-                        '        </div>' +
-                        '        <div class="panel-body">' +
-                        '            '+result[i].talkContent+''+
-                        '        </div>' +
-                        '        <div class="panel-footer">' +
-                        '            <span class="time">'+new Date(result[i].time).toLocaleString()+'</span>' +
-                        '            <span class="icon-two pull-right">' +
-                        '                <a href="javascript:;" class="delete-talk">删除</a>'+
-                        '                <a href="javascript:;" class="zan-number">' +
-                        '                    <i class="glyphicon glyphicon-thumbs-up"></i>' +
-                        '                    <span>'+result[i].zanNum+'</span>' +
-                        '                </a>' +
-                        '                <!--动态改变id-->' +
-                        '                <a href="javascript:;" data-toggle="collapse" data-target="#mylist-collapsePanel'+i+'"' +
-                        '                   aria-expanded="false" aria-controls="collapsePanel" class="comment-a">' +
-                        '                    <i class="glyphicon glyphicon-comment"></i>' +
-                        '                    <span class="comment-number">'+result[i].commentNum+'</span>' +
-                        '                </a>' +
-                        '            </span>' +
-                        '            <div class="collapse comment-coll" id="mylist-collapsePanel'+i+'">' +
-                        '                <div class="comment-content">' +
-                        '                    <ul class="list-group comment-list">' +
-                        '                    </ul>' +
-                        '                </div>' +
-                        '            </div>' +
-                        '        </div>' +
-                        '    </div>'
-                    );
-
-                    for(var j=0; j<result[i].commentContent.length;j++) {
-                        $('.my-talklist > .panel-list .comment-list').eq(i).append(
-                            '<li class="list-group-item">' +
-                            '    <a class="reply-user" href="javascript:;">'+result[i].commentContent[j].replyUser+'：</a>' +
-                            '    <span class="reply-content">'+result[i].commentContent[j].replyContent+'</span>' +
-                            '    <div class="reply-time">'+result[i].commentContent[j].replyTime.toLocaleString()+'</div>' +
-                            '</li>'
-                        );
-                    }
-                }
-            }
-        });
-    });
 
     // 成员列表按钮点击
-    $('#member-list-btn').on('click', function(){
-        $('.main-container, .my-talklist').hide();
-        $('.member-list').show();
-        $('.member-list > .panel-list').empty();
-        $.get('/allmembers', function(data, status){
-            if(data.result==1){
-                var userList = data.userlist;
-                var talkList = data.talklist;
-                var rst = [];
-                for(var i=0;i<userList.length;i++) {
-                    var sumZan = 0;
-                    var sumTalk = 0;
-                    var username = userList[i].username;
-                    var avatarPath = userList[i].avatar;
-                    for (var j = 0; j < talkList.length; j++) {
-                        if (talkList[j].username == username) {
-                            sumZan += talkList[j].zanNum;
-                            sumTalk++;
-                        }
-                    }
-                    rst.push({
-                        'username':username,
-                        'avatarPath':avatarPath,
-                        'sumZan':sumZan,
-                        'sumTalk':sumTalk
-                    });
-                }
-                rst.sort(function(a,b){
-                    var s = a.sumZan;
-                    var t = b.sumZan;
-                    if(s < t) return 1;
-                    if(s > t) return -1;
-                });
-                for(var i=0;i<rst.length;i++) {
-                    $('.member-list > .panel-list').append(
-                        '<div class="panel panel-default">' +
-                        '            <div class="panel-heading">' +
-                        '                <h4 class="panel-title">NO.'+(i+1)+'</h4>' +
-                        '            </div>' +
-                        '            <div class="panel-body list-inline">' +
-                        '                <li class="userinfo-img">' +
-                        '                    <img src="/avatar/' + rst[i].avatarPath + '" class="img-circle">' +
-                        '                </li>' +
-                        '                <li class="user-info-li">' +
-                        '                    <ul class="user-info">' +
-                        '                        <li class="username text-primary"><a href="javascript:;"> ' + rst[i].username + ' </a></li>' +
-                        '                        <li class="brief-userinfo">总共发过<span class="text-primary">' + rst[i].sumTalk + '</span>条动态</li>' +
-                        '                        <li class="brief-userinfo">获得过<span class="text-primary">' + rst[i].sumZan + '</span>次赞</li>' +
-                        '                    </ul>' +
-                        '                </li>' +
-                        '            </div>' +
-                        '        </div>'
-                    );
-                }
-            }
-        });
-    });
+    // $('#member-list-btn').on('click', function(){
+    //     $('.main-container, .my-talklist').hide();
+    //     $('.member-list').show();
+    //     $('.member-list > .panel-list').empty();
+    //     $.get('/allmembers', function(data, status){
+    //         if(data.result==1){
+    //             var userList = data.userlist;
+    //             var talkList = data.talklist;
+    //             var rst = [];
+    //             for(var i=0;i<userList.length;i++) {
+    //                 var sumZan = 0;
+    //                 var sumTalk = 0;
+    //                 var username = userList[i].username;
+    //                 var avatarPath = userList[i].avatar;
+    //                 for (var j = 0; j < talkList.length; j++) {
+    //                     if (talkList[j].username == username) {
+    //                         sumZan += talkList[j].zanNum;
+    //                         sumTalk++;
+    //                     }
+    //                 }
+    //                 rst.push({
+    //                     'username':username,
+    //                     'avatarPath':avatarPath,
+    //                     'sumZan':sumZan,
+    //                     'sumTalk':sumTalk
+    //                 });
+    //             }
+    //             rst.sort(function(a,b){
+    //                 var s = a.sumZan;
+    //                 var t = b.sumZan;
+    //                 if(s < t) return 1;
+    //                 if(s > t) return -1;
+    //             });
+    //             for(var i=0;i<rst.length;i++) {
+    //                 $('.member-list > .panel-list').append(
+    //                     '<div class="panel panel-default">' +
+    //                     '            <div class="panel-heading">' +
+    //                     '                <h4 class="panel-title">NO.'+(i+1)+'</h4>' +
+    //                     '            </div>' +
+    //                     '            <div class="panel-body list-inline">' +
+    //                     '                <li class="userinfo-img">' +
+    //                     '                    <img src="/avatar/' + rst[i].avatarPath + '" class="img-circle">' +
+    //                     '                </li>' +
+    //                     '                <li class="user-info-li">' +
+    //                     '                    <ul class="user-info">' +
+    //                     '                        <li class="username text-primary"><a href="javascript:;"> ' + rst[i].username + ' </a></li>' +
+    //                     '                        <li class="brief-userinfo">总共发过<span class="text-primary">' + rst[i].sumTalk + '</span>条动态</li>' +
+    //                     '                        <li class="brief-userinfo">获得过<span class="text-primary">' + rst[i].sumZan + '</span>次赞</li>' +
+    //                     '                    </ul>' +
+    //                     '                </li>' +
+    //                     '            </div>' +
+    //                     '        </div>'
+    //                 );
+    //             }
+    //         }
+    //     });
+    // });
 
     // 删除说说按钮点击
     $('.panel-list').on('click', '.delete-talk', function(){
