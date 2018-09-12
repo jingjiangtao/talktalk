@@ -1,12 +1,14 @@
 $(function(){
 
-    var vm = new Vue({
+    var indexShow = new Vue({
         el:'#show-index',
         data: {
-           unlogin:true,
-           username:'',
-           avatar:'',
-           listResult: []
+            unlogin:true,
+            username:'',
+            avatar:'',
+            listResult: [],
+            inputUsername:'',
+            inputPassword:''
         },
         created: function () {
             var _this = this;
@@ -18,6 +20,7 @@ $(function(){
             });
         },
         methods: {
+            //判断当前的动态点赞图标是否应该高亮
             isZan: function (result) {
 
                 if(result.zanPerson.indexOf(this.username) != -1){
@@ -31,74 +34,71 @@ $(function(){
                         'zan-number':true
                     };
                 }
+            },
+            //登录按钮点击
+            loginMethod: function(){
+                if(!this.inputUsername||!this.inputPassword){
+                    alertDanger('注意！', '用户名和密码不能为空');
+                    return;
+                }
+                if(this.inputUsername.length<3 || this.inputPassword.length<6){
+                    alertDanger('注意！','用户名要多于3位 密码要多于6位');
+                    return;
+                }
+                $.post('/dologin', {
+                    username: this.inputUsername,
+                    password: this.inputPassword
+                }, function(data, status){
+                    if(data.result==1){
+                        //登录成功
+                        window.location.href="/";
+                    }
+                    else if(data.result==-1){
+                        // 用户名不存在
+                        alertDanger('登录失败！', '用户名不存在');
+                    }
+                    else if(data.result==-2){
+                        // 密码错误
+                        alertDanger('登录失败！', '密码错误');
+                    }else{
+                        // 未知错误
+                        alertDanger('登录失败！', '未知错误');
+                    }
+                });
+            },
+            // 注册按钮点击事件
+            signinMethod: function(){
+                if(!this.inputUsername||!this.inputPassword){
+                    alertDanger('注意！', '用户名和密码不能为空');
+                    return;
+                }
+                if(this.inputUsername.length<3 || this.inputPassword.length<6){
+                    alertDanger('注意！','用户名要多于3位 密码要多于6位');
+                    return;
+                }
+                $.post('/dosign', {
+                    username: this.inputUsername,
+                    password: this.inputPassword
+                }, function(data, status){
+                    if(data.result==1){
+                        window.location.href="/";
+                    }
+                    else if(data.result == -2){
+                        // 未知错误
+                        alertDanger('注册失败', '未知错误');
+                    }
+                    else{
+                        // 注册失败
+                        alertDanger('注册失败', '用户名已存在');
+                    }
+                });
             }
         }
     });
+
 
     /*下面是导航栏的js*/
-    // 注册按钮的点击事件
-    $('#btn-signin').on('click', function () {
-        var username = $('#username').val();
-        var password = $('#password').val();
-        if(!username||!password){
-            alertDanger('注意！', '用户名和密码不能为空');
-            return;
-        }
-        if(username.length<3 || password.length<6){
-            alertDanger('注意！','用户名要多于3位 密码要多于6位');
-            return;
-        }
-        $.post('/dosign', {
-            username: username,
-            password: password
-        }, function(data, status){
-            if(data.result==1){
-                window.location.href="/";
-            }
-            else if(data.result == -2){
-                // 未知错误
-                alertDanger('注册失败', '未知错误');
-            }
-            else{
-                // 注册失败
-                alertDanger('注册失败', '用户名已存在');
-            }
-        });
-    });
 
-    // 登录按钮的点击事件
-    $('#btn-login').on('click', function () {
-        var username = $('#username').val();
-        var password = $('#password').val();
-        if(!username||!password){
-            alertDanger('注意！', '用户名和密码不能为空');
-            return;
-        }
-        if(username.length<3 || password.length<6){
-            alertDanger('注意！','用户名要多于3位 密码要多于6位');
-            return;
-        }
-        $.post('/dologin', {
-            username: username,
-            password: password
-        }, function(data, status){
-            if(data.result==1){
-                //登录成功
-                window.location.href="/";
-            }
-            else if(data.result==-1){
-                // 用户名不存在
-                alertDanger('登录失败！', '用户名不存在');
-            }
-            else if(data.result==-2){
-                // 密码错误
-                alertDanger('登录失败！', '密码错误');
-            }else{
-                // 未知错误
-                alertDanger('登录失败！', '未知错误');
-            }
-        });
-    });
     // 回车键触发登录按钮
     $(document).keyup(function(event){
         if(event.keyCode ==13){
