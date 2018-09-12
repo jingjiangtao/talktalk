@@ -4,10 +4,7 @@ var md5 = require('../models/md5.js');
 var fs = require('fs');
 var ObjectID = require('mongodb').ObjectID;
 
-// index页面
-exports.showIndex = function(req, res, next){
-        res.render('index');
-};
+
 // vue发起的get请求处理
 exports.getIndexData = function(req, res, next){
     db.find('talkList',{},{

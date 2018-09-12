@@ -10,12 +10,11 @@ app.use(session({
     cookie: { maxAge: 60000*60 }//cookie有效时间20分钟
 }));
 
-app.set('view engine', 'ejs');
 app.use(express.static('./public'));
 app.use('/avatar',express.static('./avatar'));
+app.use(express.static('./views'));
 
-// 主页
-app.get('/', router.showIndex);
+
 // vue发起的get请求
 app.get('/getindexdata', router.getIndexData);
 // 注册业务
