@@ -1,5 +1,9 @@
 $(function(){
 
+    // $.get('/showindex', function(data, status){
+    //     console.log(data);
+    // });
+
     /*下面是导航栏的js*/
     // 注册按钮的点击事件
     $('#btn-signin').on('click', function () {

@@ -30,6 +30,7 @@ exports.showIndex = function(req, res, next){
                 zaned.push("zaned");
             }
         }
+
         res.render('index', {
             'login':req.session.login,
             'username':req.session.username,
