@@ -8,7 +8,9 @@ $(function(){
             avatar:'',
             listResult: [],
             inputUsername:'',
-            inputPassword:''
+            inputPassword:'',
+            inputStatusContent:'',
+            lastNum:500
         },
         created: function () {
             var _this = this;
@@ -92,6 +94,27 @@ $(function(){
                         alertDanger('注册失败', '用户名已存在');
                     }
                 });
+            },
+            // 发送动态按钮点击事件
+            sendStatus: function(){
+                if(this.inputStatusContent.length==0){
+                    return;
+                }
+                $.get('/sendstate', {
+                    'talkContent': this.inputStatusContent
+                }, function(data, status){
+                    if(data.result==1){
+                        this.inputStatusContent='';
+                        window.location.href = '/';
+                    }else{
+
+                    }
+                });
+            },
+            // 监听发送动态文本框的改变
+            changeLastNum: function(){
+                var size = this.inputStatusContent.length;
+                this.lastNum = 500 - size;
             }
         }
     });
@@ -258,12 +281,6 @@ $(function(){
     });
 
 
-    // 监听文本框改变
-    $('#text-content').on('keyup', function () {
-        var size = $(this).val().length;
-        $('#last-num').text($(this).attr('maxlength')-size);
-    });
-
     // 点赞图标点击事件
     $('.zan-number').on('click', function(){
         var _this = $(this);
@@ -301,21 +318,6 @@ $(function(){
         }
     });
 
-    // 发送动态按钮点击事件
-    $('#btn-send').on('click', function(){
-        if($.trim($('#text-content').val()).length==0){
-            return;
-        }
-        $.get('/sendstate', {
-            'talkContent':$('#text-content').val()
-        }, function(data, status){
-            if(data.result==1){
-                window.location.href = '/';
-            }else{
-
-            }
-        });
-    });
 
     // 回复按钮点击事件
     $('.replay-btn').on('click', function(){
