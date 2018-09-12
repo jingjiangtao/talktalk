@@ -1,8 +1,39 @@
 $(function(){
 
-    // $.get('/showindex', function(data, status){
-    //     console.log(data);
-    // });
+    var vm = new Vue({
+        el:'#show-index',
+        data: {
+           unlogin:true,
+           username:'',
+           avatar:'',
+           listResult: []
+        },
+        created: function () {
+            var _this = this;
+            $.get('/getindexdata',function(data, status){
+                _this.unlogin = data.unlogin;
+                _this.username = data.username;
+                _this.avatar = data.avatar;
+                _this.listResult = data.listResult;
+            });
+        },
+        methods: {
+            isZan: function (result) {
+
+                if(result.zanPerson.indexOf(this.username) != -1){
+                    return {
+                        'zaned':true,
+                        'zan-number':true
+                    };
+                }else{
+                    return {
+                        'zaned':false,
+                        'zan-number':true
+                    };
+                }
+            }
+        }
+    });
 
     /*下面是导航栏的js*/
     // 注册按钮的点击事件

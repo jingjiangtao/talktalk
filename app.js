@@ -16,6 +16,8 @@ app.use('/avatar',express.static('./avatar'));
 
 // 主页
 app.get('/', router.showIndex);
+// vue发起的get请求
+app.get('/getindexdata', router.getIndexData);
 // 注册业务
 app.post('/dosign', router.doSign);
 // 登录业务

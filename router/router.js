@@ -6,6 +6,10 @@ var ObjectID = require('mongodb').ObjectID;
 
 // index页面
 exports.showIndex = function(req, res, next){
+        res.render('index');
+};
+// vue发起的get请求处理
+exports.getIndexData = function(req, res, next){
     db.find('talkList',{},{
         pageAmount:0,
         page:0,
@@ -16,7 +20,7 @@ exports.showIndex = function(req, res, next){
         if(err){
             return;
         }
-        var zaned = [];
+
         for(var i=0;i<result.length;i++){
             result[i].commentContent.sort(function(a,b){
                 var s = a.replyTime;
@@ -24,19 +28,13 @@ exports.showIndex = function(req, res, next){
                 if(s < t) return 1;
                 if(s > t) return -1;
             });
-            if(result[i].zanPerson.indexOf(req.session.username)==-1){
-                zaned.push("");
-            }else{
-                zaned.push("zaned");
-            }
         }
 
-        res.render('index', {
-            'login':req.session.login,
+        res.json({
+            'unlogin':!req.session.login,
             'username':req.session.username,
             'avatar':req.session.avatar,
-            'listResult':result,
-            'zaned':zaned
+            'listResult':result
         });
     });
 };

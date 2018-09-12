@@ -22,9 +22,9 @@
 </head>
 
 <body>
-
+<div id="show-index">
 <!--网页的导航栏-->
-<nav class="navbar navbar-default navbar-fixed-top">
+    <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -42,37 +42,36 @@
                 <li><a href="javascript:;" id="my-talk-btn">我的说说</a></li>
                 <li><a href="javascript:;" id="member-list-btn">成员列表</a></li>
             </ul>
-            <% if(!login){ %>
-                <div class="navbar-form navbar-right">
-                    <div class="login-form">
-                        <div class="form-group">
-                            <input type="text" placeholder="昵称(至少3位 可以中文)" class="form-control" id="username">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" placeholder="密码(至少6位)" class="form-control" id="password">
-                        </div>
-                        <button id="btn-login" class="btn btn-success">登录</button>
-                        <button id="btn-signin" class="btn btn-success">注册</button>
+
+            <div v-if="unlogin" class="navbar-form navbar-right">
+                <div class="login-form">
+                    <div class="form-group">
+                        <input type="text" placeholder="昵称(至少3位 可以中文)" class="form-control" id="username">
                     </div>
+                    <div class="form-group">
+                        <input type="password" placeholder="密码(至少6位)" class="form-control" id="password">
+                    </div>
+                    <button id="btn-login" class="btn btn-success">登录</button>
+                    <button id="btn-signin" class="btn btn-success">注册</button>
                 </div>
-            <% }else{ %>
-            <ul class="nav navbar-nav navbar-right">
+            </div>
+
+            <ul v-else class="nav navbar-nav navbar-right">
                 <li>
                     <a href="javascript:;" id="avatar-btn">
-                        <img src="/avatar/<%= avatar %>" class="img-circle avatar-img">
+                        <img v-bind:src="'/avatar/'+avatar" class="img-circle avatar-img">
                     </a>
                 </li>
-                <li><a href="#" class="own-username"><%= username %></a></li>
+                <li><a href="#" class="own-username">{{username}}</a></li>
                 <li><a href="#" data-toggle="modal" data-target="#modify-profile">修改个人资料</a></li>
                 <li><a href="#" id="btn-quit">退出登录</a></li>
             </ul>
-            <% } %>
+
         </div><!--/.navbar-collapse -->
     </div>
 </nav>
 <!-- Main jumbotron for a primary marketing message or call to action -->
-<% if(!login){ %>
-    <div class="container-fluid brief-fluid">
+<div v-if="unlogin" class="container-fluid brief-fluid">
         <div class="jumbotron">
             <div class="container">
                 <div class="alert alert-dismissible" role="alert">
@@ -108,9 +107,9 @@
             </footer>
         </div>
     </div>
-<% }else{ %>
     <!--所有说说列表-->
-<div class="container main-container">
+<div v-else>
+    <div class="container main-container">
     <div class="jumbotron text-content-bg">
         <div class="container">
             <div class="row">
@@ -125,32 +124,32 @@
     </div>
     <div class="container">
         <div class="panel-list">
-            <% for(var i = 0;i < listResult.length;i++) {%>
-            <div class="panel panel-default">
-                <span class="_id"><%=listResult[i]._id%></span>
+
+            <div v-for="(result, index) in listResult" class="panel panel-default">
+                <span class="_id">{{result._id}}</span>
                 <div class="panel-heading">
-                    <img src="/avatar/<%= listResult[i].avatarPath %>" class="img-circle avatar-img panel-avatar">
-                    <span class="panel-username"><%= listResult[i].username %></span>
+                    <img v-bind:src="'/avatar/'+result.avatarPath" class="img-circle avatar-img panel-avatar">
+                    <span class="panel-username">{{result.username}}</span>
                 </div>
                 <div class="panel-body">
-                    <%= listResult[i].talkContent%>
+                    {{result.talkContent}}
                 </div>
                 <div class="panel-footer">
-                    <span class="time"><%= listResult[i].time.toLocaleString()%></span>
+                    <span class="time">{{result.time.toLocaleString()}}</span>
                     <span class="icon-two pull-right">
-                        <a href="javascript:;" class="zan-number <%=zaned[i]%>">
+                        <a href="javascript:;" v-bind:class="isZan(result)">
                             <i class="glyphicon glyphicon-thumbs-up"></i>
-                            <span><%=listResult[i].zanNum%></span>
+                            <span>{{result.zanNum}}</span>
                         </a>
 						<!--评论面板小图标-->
-                        <a href="javascript:;" data-toggle="collapse" data-target="#collapsePanel<%=i%>"
+                        <a href="javascript:;" data-toggle="collapse" v-bind:data-target="'#collapsePanel'+index"
                            aria-expanded="false" aria-controls="collapsePanel" class="comment-a">
                             <i class="glyphicon glyphicon-comment"></i>
-                            <span class="comment-number"><%=listResult[i].commentNum%></span>
+                            <span class="comment-number">{{result.commentNum}}</span>
                         </a>
                     </span>
 					<!--评论面板-->
-                    <div class="collapse comment-coll" id="collapsePanel<%=i%>">
+                    <div class="collapse comment-coll" v-bind:id="'collapsePanel'+index">
                         <div class="comment-content">
                             <div>
                                 <textarea maxlength="200" class="form-control reply-textarea" rows="3" placeholder=""></textarea>
@@ -158,19 +157,19 @@
                             </div>
 							<!--评论列表-->
                             <ul class="list-group comment-list">
-                                <%for(var j=0;j<listResult[i].commentContent.length;j++){%>
-                                <li class="list-group-item">
-                                    <a class="reply-user" href="javascript:;"><%=listResult[i].commentContent[j].replyUser%>：</a>
-                                    <span class="reply-content"><%=listResult[i].commentContent[j].replyContent%></span>
-                                    <div class="reply-time"><%=listResult[i].commentContent[j].replyTime.toLocaleString()%></div>
+
+                                <li v-for="comment in result.commentContent" class="list-group-item">
+                                    <a class="reply-user" href="javascript:;">{{comment.replyUser}}：</a>
+                                    <span class="reply-content">{{comment.replyContent}}</span>
+                                    <div class="reply-time">{{comment.replyTime.toLocaleString()}}</div>
                                 </li>
-                                <%}%>
+
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
-            <% } %>
+
         </div>
     </div> <!-- /container -->
     <hr>
@@ -181,7 +180,7 @@
     </div>
 </div>
     <!--我的说说列表-->
-<div class="container my-talklist">
+    <div class="container my-talklist">
     <div class="panel-list"></div>
     <hr>
     <div>
@@ -191,7 +190,7 @@
     </div>
 </div>
     <!--成员列表    -->
-<div class="container member-list">
+    <div class="container member-list">
     <div class="panel-list"></div>
     <hr>
     <div>
@@ -200,7 +199,8 @@
         </footer>
     </div>
 </div>
-<% } %>
+</div>
+
 
 <!-- Modal -->
 <!--修改个人信息的模态框-->
@@ -218,7 +218,7 @@
                 </div>
                 <form>
                     <div class="form-group">
-                        <img src="/avatar/<%= avatar %>" class="img-circle center-block avatar-img">
+                        <img v-bind:src="'/avatar/'+avatar" class="img-circle center-block avatar-img">
                     </div>
                     <div class="form-group center-block">
                         <a href="#" id="modi-avatar" class="center-block">修改头像 &gt;</a>
@@ -243,7 +243,7 @@
         </div>
     </div>
 </div>
-
+</div>
 <!--修改头像模态框-->
 <div class="modal fade" id="avatar-modal" aria-hidden="true" aria-labelledby="avatar-modal-label" role="dialog"
      tabindex="-1">
