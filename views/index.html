@@ -37,9 +37,9 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav nav-list">
-                <li class="active"><a v-on:click="allTalk" href="javascript:;">全部说说</a></li>
-                <li><a v-on:click="myTalk" href="javascript:;">我的说说</a></li>
-                <li><a v-on:click="members" href="javascript:;">成员列表</a></li>
+                <li v-bind:class="{active:mainContainer}"><a v-on:click="allTalk" href="javascript:;">全部说说</a></li>
+                <li v-bind:class="{active:myTalklist}"><a v-on:click="myTalk" href="javascript:;">我的说说</a></li>
+                <li v-bind:class="{active:memberlist}"><a v-on:click="members" href="javascript:;">成员列表</a></li>
             </ul>
 
             <div v-if="unlogin" class="navbar-form navbar-right">
@@ -57,7 +57,7 @@
 
             <ul v-else class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="javascript:;" id="avatar-btn">
+                    <a v-on:click="myTalk" href="javascript:;">
                         <img v-bind:src="'/avatar/'+avatar" class="img-circle avatar-img">
                     </a>
                 </li>
@@ -108,11 +108,12 @@
     </div>
 
 <div v-else>
+    <!--全部说说列表-->
     <div v-if="mainContainer" class="container main-container">
         <div class="jumbotron text-content-bg">
         <div class="container">
             <div class="row">
-                    <textarea v-model.trim="inputStatusContent" v-on:keyup="changeLastNum" id="text-content" maxlength="500" class="form-control col-lg-12" rows="7"
+                    <textarea v-model.trim="inputStatusContent" v-on:keyup="changeLastNum" id="text-content" maxlength="300" class="form-control col-lg-12" rows="7"
                               placeholder="有什么想和大家分享的？"></textarea>
                 <span id="last-num" class="col-lg-1 col-lg-offset-10">{{lastNum}}</span>
                 <button v-on:click="sendStatus" id="btn-send" type="button" class="btn btn-success col-lg-1">发布</button>
@@ -124,14 +125,14 @@
         <div class="container">
             <div class="panel-list">
 
-                <div v-for="(result, index) in listResult" class="panel panel-default">
+                <div v-for="(result, index) in listResult" v-bind:class="isOwn(result)">
                     <span class="_id">{{result._id}}</span>
                     <div class="panel-heading">
                         <img v-bind:src="'/avatar/'+result.avatarPath" class="img-circle avatar-img panel-avatar">
                         <span class="panel-username">{{result.username}}</span>
                     </div>
                     <div class="panel-body">
-                        {{result.talkContent}}
+                        <textarea v-bind:value="result.talkContent" disabled="disabled" class="col-lg-12 talk-content" rows="5"></textarea>
                     </div>
                     <div class="panel-footer">
                         <span class="time">{{(new Date(result.time)).toLocaleString()}}</span>
@@ -188,12 +189,12 @@
                     <span class="panel-username">{{result.username}}</span>
                 </div>
                 <div class="panel-body">
-                    {{result.talkContent}}
+                    <textarea v-bind:value="result.talkContent" disabled="disabled" class="col-lg-12 talk-content" rows="5"></textarea>
                 </div>
                 <div class="panel-footer">
                     <span class="time">{{(new Date(result.time)).toLocaleString()}}</span>
                     <span class="icon-two pull-right">
-                        <a href="javascript:;" class="delete-talk">删除</a>
+                        <a v-on:click="deleteMyTalk(result)" href="javascript:;" class="delete-talk">删除</a>
                         <a href="javascript:;" class="zan-number">
                             <i class="glyphicon glyphicon-thumbs-up"></i>
                             <span>{{result.zanNum}}</span>
@@ -231,11 +232,10 @@
             </footer>
         </div>
     </div>
-
-    <!--成员列表    -->
+    <!--成员列表-->
     <div v-if="memberlist" class="container member-list">
         <div class="panel-list">
-            成员
+
         </div>
         <hr>
         <div>

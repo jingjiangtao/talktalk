@@ -35,8 +35,6 @@ app.get('/dozan', router.doZan);
 app.get('/docancelzan', router.doCancelZan);
 // 回复
 app.get('/replay', router.replay);
-// 我的说说列表
-app.get('/mytalklist', router.myTalklist);
 // 删除一条说说
 app.get('/deletetalk', router.deleteTalk);
 // 列出所有用户

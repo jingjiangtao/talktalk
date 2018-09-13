@@ -13,7 +13,7 @@ $(function(){
             inputPassword:'',
             //发表动态文本框参数
             inputStatusContent:'',
-            lastNum:500,
+            lastNum:300,
             // 控制三个页面切换参数
             mainContainer:true,
             myTalklist:false,
@@ -28,6 +28,12 @@ $(function(){
                 _this.username = data.username;
                 _this.avatar = data.avatar;
                 _this.listResult = data.listResult;
+                for(var i=0;i<_this.listResult.length;i++){
+                    if(_this.myTalkResult.indexOf(_this.listResult[i])==-1 &&
+                        _this.listResult[i].username == _this.username){
+                        _this.myTalkResult.push(_this.listResult[i]);
+                    }
+                }
             });
         },
         methods: {
@@ -44,6 +50,22 @@ $(function(){
                         'zaned':false,
                         'zan-number':true
                     };
+                }
+            },
+            //给自己的动态添加样式
+            isOwn:function(result){
+                if(result.username==this.username){
+                    return {
+                        'panel':true,
+                        'panel-default':false,
+                        'panel-primary':true
+                    }
+                }else{
+                    return {
+                        'panel':true,
+                        'panel-default':true,
+                        'panel-primary':false
+                    }
                 }
             },
             //登录按钮点击
@@ -114,8 +136,9 @@ $(function(){
                     'talkContent': this.inputStatusContent
                 }, function(data, status){
                     if(data.result==1){
-                        _this.listResult.unshift({
-                            avatarPath:'default.jpg',
+                        var newStatus = {
+                            _id:data._id,
+                            avatarPath:_this.avatar,
                             commentContent:[],
                             commentNum:0,
                             talkContent:_this.inputStatusContent,
@@ -123,8 +146,12 @@ $(function(){
                             username:_this.username,
                             zanNum:0,
                             zanPerson:[]
-                        });
+                        };
+                        _this.listResult.unshift(newStatus);
+                        _this.myTalkResult.unshift(newStatus);
                         _this.inputStatusContent='';
+                        _this.lastNum = 300;
+
                     }else{
 
                     }
@@ -133,7 +160,7 @@ $(function(){
             // 监听发送动态文本框的改变
             changeLastNum: function(){
                 var size = this.inputStatusContent.length;
-                this.lastNum = 500 - size;
+                this.lastNum = 300 - size;
             },
             // 退出账户
             quitMethod: function () {
@@ -159,12 +186,7 @@ $(function(){
                 _this.mainContainer = false;
                 _this.memberlist = false;
                 _this.myTalklist = true;
-                $.get('/mytalklist', function(data, status) {
-                    if (data.result == 1) {
-                        // 查询成功
-                        _this.myTalkResult = data.data;
-                    }
-                });
+
             },
 
             // 显示成员列表页面
@@ -172,6 +194,21 @@ $(function(){
                 this.mainContainer = false;
                 this.myTalklist = false;
                 this.memberlist = true;
+            },
+
+            //删除我的说说
+            deleteMyTalk:function (currList) {
+                var _this = this;
+                $.get('/deletetalk', {
+                    '_id':currList._id
+                }, function(data, status){
+                    if(data.result==1){
+                        var index = _this.myTalkResult.indexOf(currList);
+                        _this.myTalkResult.splice(index, 1);
+                        index = _this.listResult.indexOf(currList);
+                        _this.listResult.splice(index, 1);
+                    }
+                });
             }
         }
     });
@@ -236,22 +273,7 @@ $(function(){
         $('.alert').addClass('alert-danger').fadeIn();
     }
 
-    // $('.nav-list > li').on('click', function(){
-    //     $('.navbar-right > li').removeClass('active');
-    //     $(this).siblings('li').removeClass('active');
-    //     $(this).addClass('active');
-    // });
-    //
-    // $('.navbar-right > li').on('click', function(){
-    //     $('.nav-list > li').removeClass('active');
-    //     $(this).siblings('li').removeClass('active');
-    //     $(this).addClass('active');
-    // });
-    //
-    // $('#modi-avatar').on('click', function(){
-    //     $('#modify-profile').modal('hide');
-    //     $('#avatar-modal').modal('show');
-    // });
+
 
     // 上传修改头像
     //做个下简易的验证  大小 格式
@@ -311,16 +333,6 @@ $(function(){
     }
 
 
-
-    /*下面是主页面的js*/
-    //给自己的动态添加样式
-    // $('.panel-username').each(function(index, value){
-    //     if($(value).text()==$('.own-username').text()){
-    //         // $(value).parent().addClass('own-talk');
-    //         $(value).parents('.panel').removeClass('panel-default');
-    //         $(value).parents('.panel').addClass('panel-primary');
-    //     }
-    // });
 
 
     // 点赞图标点击事件
@@ -397,11 +409,6 @@ $(function(){
         textarea.focus();
     });
 
-    //头像点击事件
-    $('#avatar-btn').on('click', function(){
-        $('#my-talk-btn').trigger('click');
-    });
-
 
     // 成员列表按钮点击
     // $('#member-list-btn').on('click', function(){
@@ -462,17 +469,5 @@ $(function(){
     //     });
     // });
 
-    // 删除说说按钮点击
-    $('.panel-list').on('click', '.delete-talk', function(){
-        var _this = $(this);
-        var _id = _this.parents('.panel').find('._id').text();
 
-        $.get('/deletetalk', {
-            '_id':_id
-        }, function(data, status){
-            if(data.result==1){
-                _this.parents('.panel').remove();
-            }
-        });
-    });
 });

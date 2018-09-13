@@ -26,9 +26,7 @@ hr{
     background-color: #FFFFFF;
     border-radius: 10px;
 }
-.my-talklist, .member-list{
-    display: none;
-}
+
 
 /*我的说说列表页面样式*/
 .my-talklist .zan-number,.my-talklist .reply-user{
@@ -151,6 +149,11 @@ hr{
 .own-talk{
     background-color: #614789 !important;
     color: #fff !important;
+}
+.talk-content{
+    resize: none;
+    background-color: #ffffff;
+    border:none;
 }
 
 /*评论框的样式*/

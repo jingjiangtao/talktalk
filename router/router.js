@@ -54,7 +54,7 @@ exports.sendState = function(req, res, next){
             return;
         }else if(result.result.n==1){
             // 插入成功
-            res.json({'result':1});
+            res.json({'result':1,'_id':result.ops[0]._id});
         }else{
             res.json({'result':-1});
         }
@@ -139,34 +139,6 @@ exports.replay = function(req, res, next){
     });
 };
 
-// 显示我的说说列表
-exports.myTalklist = function(req, res, next){
-    db.find('talkList',{'username':req.session.username},{
-        pageAmount:0,
-        page:0,
-        sort:{
-            'time':-1,
-        }
-    }, function(err, result){
-        if(err){
-            res.json({'result':-1});
-            return;
-        }else{
-            for(var i=0;i<result.length;i++){
-                result[i].commentContent.sort(function(a,b){
-                    var s = a.replyTime;
-                    var t = b.replyTime;
-                    if(s < t) return 1;
-                    if(s > t) return -1;
-                });
-            }
-            res.json({
-                'result':1,
-                'data':result
-            });
-        }
-    });
-};
 
 //删除说说业务
 exports.deleteTalk = function(req, res, next){
