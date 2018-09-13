@@ -455,14 +455,14 @@
             loginMethod: function(){
                 var _this = this;
                 if(!this.inputUsername||!this.inputPassword){
-                    //alertDanger('注意！', '用户名和密码不能为空');
+
                     this.alertDis = true;
                     this.text1 = '注意！';
                     this.text2 = '用户名和密码不能为空';
                     return;
                 }
                 if(this.inputUsername.length<3 || this.inputPassword.length<6){
-                    //alertDanger('注意！','用户名要多于3位 密码要多于6位');
+
                     this.alertDis = true;
                     this.text1 = '注意！';
                     this.text2 = '用户名要多于3位 密码要多于6位';
@@ -478,14 +478,14 @@
                     }
                     else if(data.result==-1){
                         // 用户名不存在
-                        //alertDanger('登录失败！', '用户名不存在');
+
                         _this.alertDis = true;
                         _this.text1 = '登录失败！';
                         _this.text2 = '用户名不存在';
                     }
                     else if(data.result==-2){
                         // 密码错误
-                        //alertDanger('登录失败！', '密码错误');
+
                         _this.alertDis = true;
                         _this.text1 = '登录失败！';
                         _this.text2 = '密码错误';
@@ -502,14 +502,14 @@
             signinMethod: function(){
                 var _this = this;
                 if(!this.inputUsername||!this.inputPassword){
-                    //alertDanger('注意！', '用户名和密码不能为空');
+
                     _this.alertDis = true;
                     _this.text1 = '注意！';
                     _this.text2 = '用户名和密码不能为空';
                     return;
                 }
                 if(this.inputUsername.length<3 || this.inputPassword.length<6){
-                    //alertDanger('注意！','用户名要多于3位 密码要多于6位');
+
                     _this.alertDis = true;
                     _this.text1 = '注意！';
                     _this.text2 = '用户名要多于3位 密码要多于6位';
@@ -524,14 +524,14 @@
                     }
                     else if(data.result == -2){
                         // 未知错误
-                        //alertDanger('注册失败', '未知错误');
+
                         _this.alertDis = true;
                         _this.text1 = '注册失败';
                         _this.text2 = '未知错误';
                     }
                     else{
                         // 注册失败
-                        //alertDanger('注册失败', '用户名已存在');
+
                         _this.alertDis = true;
                         _this.text1 = '注册失败';
                         _this.text2 = '用户名已存在';
@@ -711,7 +711,7 @@
                 console.log(oldPwd,newPwd,okNewPwd);
                 var _this = this;
                 if(!oldPwd || !newPwd || !okNewPwd){
-                    // modalDangerAlert('注意！', '输入框不能为空');
+
                     _this.alertDis2 = true;
                     _this.text1 = '注意！';
                     _this.text2 = '输入框不能为空';
@@ -719,7 +719,7 @@
                 }
 
                 if(oldPwd.length < 6 || newPwd.length < 6 || okNewPwd.length < 6){
-                    // modalDangerAlert('注意！','密码应不少于6位');
+
                     _this.alertDis2 = true;
                     _this.text1 = '注意！';
                     _this.text2 = '密码应不少于6位';
@@ -727,7 +727,7 @@
                 }
 
                 if(newPwd != okNewPwd){
-                    // modalDangerAlert('注意！','两次输入的密码不一致');
+
                     _this.alertDis2 = true;
                     _this.text1 = '注意！';
                     _this.text2 = '两次输入的密码不一致';
@@ -743,19 +743,19 @@
                         window.location.href = '/';
                     }
                     else if(data.result==-1){
-                        // modalDangerAlert('未知错误！','修改失败');
+
                         _this.alertDis2 = true;
                         _this.text1 = '未知错误！';
                         _this.text2 = '修改失败';
                     }
                     else if(data.result==-2){
-                        // modalDangerAlert('修改失败！','旧密码不正确');
+
                         _this.alertDis2 = true;
                         _this.text1 = '修改失败！';
                         _this.text2 = '旧密码不正确';
                     }
                     else if(data.result==-3){
-                        // modalDangerAlert('修改失败！','新密码不能与旧密码相同');
+
                         _this.alertDis2 = true;
                         _this.text1 = '修改失败！';
                         _this.text2 = '新密码不能与旧密码相同';
@@ -781,8 +781,8 @@
         } else {
             var filename = document.querySelector("#avatar-name");
             var texts = document.querySelector("#avatarInput").value;
-            var teststr = texts; //你这里的路径写错了
-            testend = teststr.match(/[^\\]+\.[^\(]+/i); //直接完整文件名的
+            var teststr = texts;
+            testend = teststr.match(/[^\\]+\.[^\(]+/i);
             filename.innerHTML = testend;
         }
 

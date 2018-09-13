@@ -7,7 +7,7 @@ app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 60000*60 }//cookie有效时间20分钟
+    cookie: { maxAge: 60000*60 }//cookie有效时间60分钟
 }));
 
 app.use(express.static('./public'));
@@ -15,7 +15,7 @@ app.use('/avatar',express.static('./avatar'));
 app.use(express.static('./views'));
 
 
-// vue发起的get请求
+// vue初始化发起的get请求
 app.get('/getindexdata', router.getIndexData);
 // 注册业务
 app.post('/dosign', router.doSign);
