@@ -348,6 +348,15 @@ exports.modifyAvatar = function(req, res, next){
                 return;
             }else{
                 req.session.avatar = avatarPath;
+                db.updateMany('talkList',{
+                    'username':req.session.username
+                },{
+                    $set:{'avatarPath':avatarPath}
+                }, function(err, result){
+                    if(err){
+                        return;
+                    }
+                });
                 db.updateMany('user',{
                     'username':req.session.username
                 },{
