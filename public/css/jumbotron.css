@@ -89,9 +89,7 @@ hr{
 }
 
 /*警告框的样式*/
-.alert{
-    display:none;
-}
+
 .alert > span{
     margin-left:5px;
 }
@@ -144,6 +142,9 @@ hr{
     color:#000000bf;
 }
 .zaned{
+    color:#E20000 !important;
+}
+.comment-a:hover{
     color:#E20000 !important;
 }
 .own-talk{

@@ -73,9 +73,11 @@
 <div v-if="unlogin" class="container-fluid brief-fluid">
         <div class="jumbotron">
             <div class="container">
-                <div class="alert alert-dismissible" role="alert">
-                    <strong></strong><span></span>
-                </div>
+                <!--<div class="alert alert-dismissible" role="alert">-->
+                    <!--<strong></strong><span></span>-->
+                <!--</div>-->
+                <alert-box v-if="alertDis" v-bind:text1="text1" v-bind:text2="text2"></alert-box>
+
                 <h1>欢迎使用小小说说</h1>
                 <p>要查看或发布动态，请先登录</p>
 
@@ -137,13 +139,13 @@
                     <div class="panel-footer">
                         <span class="time">{{(new Date(result.time)).toLocaleString()}}</span>
                         <span class="icon-two pull-right">
-                            <a href="javascript:;" v-bind:class="isZan(result)">
+                            <a href="javascript:;" class="zan-number" v-bind:class="isZan(result)" v-on:click="zan(result)">
                                 <i class="glyphicon glyphicon-thumbs-up"></i>
                                 <span>{{result.zanNum}}</span>
                             </a>
                             <!--评论面板小图标-->
-                            <a href="javascript:;" data-toggle="collapse" v-bind:data-target="'#collapsePanel'+index"
-                               aria-expanded="false" aria-controls="collapsePanel" class="comment-a">
+                            <a href="javascript:;" data-toggle="collapse" class="comment-a" v-bind:data-target="'#collapsePanel'+index"
+                               aria-expanded="false" aria-controls="collapsePanel">
                                 <i class="glyphicon glyphicon-comment"></i>
                                 <span class="comment-number">{{result.commentNum}}</span>
                             </a>
@@ -152,16 +154,16 @@
                         <div class="collapse comment-coll" v-bind:id="'collapsePanel'+index">
                             <div class="comment-content">
                                 <div>
-                                    <textarea maxlength="200" class="form-control reply-textarea" rows="3" placeholder=""></textarea>
-                                    <button type="button" class="btn btn-success pull-right replay-btn">回复</button>
+                                    <textarea v-model.trim="replyTextarea" maxlength="110" class="form-control reply-textarea" rows="3" placeholder=""></textarea>
+                                    <button v-on:click="replayBtn(result)" type="button" class="btn btn-success pull-right">回复</button>
                                 </div>
                                 <!--评论列表-->
                                 <ul class="list-group comment-list">
 
                                     <li v-for="comment in result.commentContent" class="list-group-item">
-                                        <a class="reply-user" href="javascript:;">{{comment.replyUser}}：</a>
+                                        <a v-on:click="replyToUser(comment)" href="javascript:;">{{comment.replyUser}}：</a>
                                         <span class="reply-content">{{comment.replyContent}}</span>
-                                        <div class="reply-time">{{comment.replyTime.toLocaleString()}}</div>
+                                        <div class="reply-time">{{(new Date(comment.replyTime)).toLocaleString()}}</div>
                                     </li>
 
                                 </ul>
@@ -235,7 +237,23 @@
     <!--成员列表-->
     <div v-if="memberlist" class="container member-list">
         <div class="panel-list">
-
+            <div v-for="(result, index) in memberResult" class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">NO.{{index+1}}</h4>
+                </div>
+                <div class="panel-body list-inline">
+                    <li class="userinfo-img">
+                        <img v-bind:src="'/avatar/'+ result.avatarPath" class="img-circle">
+                    </li>
+                    <li class="user-info-li">
+                        <ul class="user-info">
+                            <li class="username text-primary"><a href="javascript:;">   {{result.username}}   </a></li>
+                            <li class="brief-userinfo">总共发过<span class="text-primary">  {{result.sumTalk}}  </span>条动态</li>
+                            <li class="brief-userinfo">获得过<span class="text-primary">  {{result.sumZan}}  </span>次赞</li>
+                        </ul>
+                    </li>
+                </div>
+            </div>
         </div>
         <hr>
         <div>
@@ -266,7 +284,7 @@
                         <img v-bind:src="'/avatar/'+avatar" class="img-circle center-block avatar-img">
                     </div>
                     <div class="form-group center-block">
-                        <a href="#" id="modi-avatar" class="center-block">修改头像 &gt;</a>
+                        <a href="#" id="modi-avatar" data-toggle="modal" data-target="#avatar-modal" class="center-block" >修改头像 &gt;</a>
                     </div>
                     <div class="form-group">
                         <label for="old-pwd" class="control-label">旧密码:</label>
