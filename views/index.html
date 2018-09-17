@@ -15,7 +15,7 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="/css/jumbotron.css" rel="stylesheet">
+    <link href="/css/index-page.css" rel="stylesheet">
     <link href="/css/cropper.min.css" rel="stylesheet">
     <link href="/css/sitelogo.css" rel="stylesheet">
 </head>
@@ -73,9 +73,7 @@
 <div v-if="unlogin" class="container-fluid brief-fluid">
         <div class="jumbotron">
             <div class="container">
-                <!--<div class="alert alert-dismissible" role="alert">-->
-                    <!--<strong></strong><span></span>-->
-                <!--</div>-->
+
                 <alert-box v-if="alertDis" v-bind:text1="text1" v-bind:text2="text2"></alert-box>
 
                 <h1>欢迎使用小小说说</h1>
@@ -276,9 +274,7 @@
                 <h4 class="modal-title" id="myModalLabel">修改个人信息</h4>
             </div>
             <div class="modal-body">
-                <div class="alert alert-dismissible modal-alert alert-danger" role="alert">
-                    <strong></strong><span></span>
-                </div>
+                <alert-box v-if="alertDis2" v-bind:text1="text1" v-bind:text2="text2"></alert-box>
                 <form>
                     <div class="form-group">
                         <img v-bind:src="'/avatar/'+avatar" class="img-circle center-block avatar-img">
@@ -301,7 +297,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button id="btn-updata-pwd" type="button" class="btn btn-primary">确定</button>
+                <button v-on:click="updatePwd" type="button" class="btn btn-primary">确定</button>
             </div>
         </div>
     </div>
@@ -364,8 +360,467 @@
 <script src="/js/sitelogo.js"></script>
 <script src="/js/html2canvas.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="/js/vue.js"></script>
-<!--页面自身的js文件-->
-<script src="/js/index-page.js"></script>
 
+<!--页面自身的js文件-->
+<script>
+
+
+    Vue.component('alert-box', {
+        props:['text1','text2'],
+        template: `
+    <div class="alert alert-danger" role="alert">
+         <strong>{{text1}}</strong><span>{{text2}}</span>
+    </div>
+  `
+    });
+
+
+    var indexShow = new Vue({
+        el:'#show-index',
+        data: {
+            //页面初始化参数
+            unlogin:true,
+            username:'',
+            avatar:'',
+            listResult: [],
+            //登陆注册输入框参数
+            inputUsername:'',
+            inputPassword:'',
+            //发表动态文本框参数
+            inputStatusContent:'',
+            lastNum:300,
+            // 控制三个页面切换参数
+            mainContainer:true,
+            myTalklist:false,
+            memberlist:false,
+            // 我的说说页面数据
+            myTalkResult:[],
+            //所有用户页面数据
+            memberResult:[],
+            //回复框中的值
+            replyTextarea:'',
+            //是否显示警告框
+            alertDis:false,
+            alertDis2:false,
+            //警告框中的信息
+            text1:'',
+            text2:''
+        },
+        created: function () {
+            var _this = this;
+            $.get('/getindexdata',function(data, status){
+                _this.unlogin = data.unlogin;
+                _this.username = data.username;
+                _this.avatar = data.avatar;
+                _this.listResult = data.listResult;
+                for(var i=0;i<_this.listResult.length;i++){
+                    if(_this.myTalkResult.indexOf(_this.listResult[i])==-1 &&
+                        _this.listResult[i].username == _this.username){
+                        _this.myTalkResult.push(_this.listResult[i]);
+                    }
+                }
+            });
+        },
+        methods: {
+            //判断当前的动态点赞图标是否应该高亮
+            isZan: function (result) {
+
+                if(result.zanPerson.indexOf(this.username) != -1){
+                    return {
+                        'zaned':true
+                    };
+                }else{
+                    return {
+                        'zaned':false
+                    };
+                }
+            },
+            //给自己的动态添加样式
+            isOwn:function(result){
+                if(result.username==this.username){
+                    return {
+                        'panel':true,
+                        'panel-default':false,
+                        'panel-primary':true
+                    }
+                }else{
+                    return {
+                        'panel':true,
+                        'panel-default':true,
+                        'panel-primary':false
+                    }
+                }
+            },
+            //登录按钮点击
+            loginMethod: function(){
+                var _this = this;
+                if(!this.inputUsername||!this.inputPassword){
+
+                    this.alertDis = true;
+                    this.text1 = '注意！';
+                    this.text2 = '用户名和密码不能为空';
+                    return;
+                }
+                if(this.inputUsername.length<3 || this.inputPassword.length<6){
+
+                    this.alertDis = true;
+                    this.text1 = '注意！';
+                    this.text2 = '用户名要多于3位 密码要多于6位';
+                    return;
+                }
+                $.post('/dologin', {
+                    username: this.inputUsername,
+                    password: this.inputPassword
+                }, function(data, status){
+                    if(data.result==1){
+                        //登录成功
+                        window.location.href="/";
+                    }
+                    else if(data.result==-1){
+                        // 用户名不存在
+
+                        _this.alertDis = true;
+                        _this.text1 = '登录失败！';
+                        _this.text2 = '用户名不存在';
+                    }
+                    else if(data.result==-2){
+                        // 密码错误
+
+                        _this.alertDis = true;
+                        _this.text1 = '登录失败！';
+                        _this.text2 = '密码错误';
+                    }else{
+                        // 未知错误
+                        //alertDanger('登录失败！', '未知错误');
+                        _this.alertDis = true;
+                        _this.text1 = '登录失败！';
+                        _this.text2 = '未知错误';
+                    }
+                });
+            },
+            // 注册按钮点击事件
+            signinMethod: function(){
+                var _this = this;
+                if(!this.inputUsername||!this.inputPassword){
+
+                    _this.alertDis = true;
+                    _this.text1 = '注意！';
+                    _this.text2 = '用户名和密码不能为空';
+                    return;
+                }
+                if(this.inputUsername.length<3 || this.inputPassword.length<6){
+
+                    _this.alertDis = true;
+                    _this.text1 = '注意！';
+                    _this.text2 = '用户名要多于3位 密码要多于6位';
+                    return;
+                }
+                $.post('/dosign', {
+                    username: this.inputUsername,
+                    password: this.inputPassword
+                }, function(data, status){
+                    if(data.result==1){
+                        window.location.href="/";
+                    }
+                    else if(data.result == -2){
+                        // 未知错误
+
+                        _this.alertDis = true;
+                        _this.text1 = '注册失败';
+                        _this.text2 = '未知错误';
+                    }
+                    else{
+                        // 注册失败
+
+                        _this.alertDis = true;
+                        _this.text1 = '注册失败';
+                        _this.text2 = '用户名已存在';
+                    }
+                });
+            },
+            // 发送动态按钮点击事件
+            sendStatus: function(){
+                if(this.inputStatusContent.length==0){
+                    return;
+                }
+                var _this = this;
+                $.get('/sendstate', {
+                    'talkContent': this.inputStatusContent
+                }, function(data, status){
+                    if(data.result==1){
+                        var newStatus = {
+                            _id:data._id,
+                            avatarPath:_this.avatar,
+                            commentContent:[],
+                            commentNum:0,
+                            talkContent:_this.inputStatusContent,
+                            time:(new Date()),
+                            username:_this.username,
+                            zanNum:0,
+                            zanPerson:[]
+                        };
+                        _this.listResult.unshift(newStatus);
+                        _this.myTalkResult.unshift(newStatus);
+                        _this.inputStatusContent='';
+                        _this.lastNum = 300;
+
+                    }else{
+
+                    }
+                });
+            },
+            // 监听发送动态文本框的改变
+            changeLastNum: function(){
+                var size = this.inputStatusContent.length;
+                this.lastNum = 300 - size;
+            },
+            // 退出账户
+            quitMethod: function () {
+                $.get('/quit',function(data, status){
+                    if(data.result==1){
+                        window.location.href = '/';
+                    }else{
+                        alertDanger('错误', '退出失败');
+                    }
+                });
+            },
+            // 显示所有说说页面
+            allTalk: function () {
+                this.mainContainer = true;
+                this.myTalklist = false;
+                this.memberlist = false;
+            },
+            // 显示我的说说页面
+            myTalk: function () {
+                var _this = this;
+                _this.mainContainer = false;
+                _this.memberlist = false;
+                _this.myTalklist = true;
+            },
+            // 显示成员列表页面
+            members: function () {
+                this.mainContainer = false;
+                this.myTalklist = false;
+                this.memberlist = true;
+                var _this = this;
+                $.get('/allmembers', function(data, status) {
+                    if (data.result == 1) {
+                        var userList = data.userlist;
+                        var talkList = data.talklist;
+                        var rst = [];
+                        for (var i = 0; i < userList.length; i++) {
+                            var sumZan = 0;
+                            var sumTalk = 0;
+                            var username = userList[i].username;
+                            var avatarPath = userList[i].avatar;
+                            for (var j = 0; j < talkList.length; j++) {
+                                if (talkList[j].username == username) {
+                                    sumZan += talkList[j].zanNum;
+                                    sumTalk++;
+                                }
+                            }
+                            rst.push({
+                                'username': username,
+                                'avatarPath': avatarPath,
+                                'sumZan': sumZan,
+                                'sumTalk': sumTalk
+                            });
+                        }
+                        rst.sort(function (a, b) {
+                            var s = a.sumZan;
+                            var t = b.sumZan;
+                            if (s < t) return 1;
+                            if (s > t) return -1;
+                        });
+                        _this.memberResult = rst;
+                    }
+                });
+            },
+            //删除我的说说
+            deleteMyTalk:function (currList) {
+                var _this = this;
+                $.get('/deletetalk', {
+                    '_id':currList._id
+                }, function(data, status){
+                    if(data.result==1){
+                        var index = _this.myTalkResult.indexOf(currList);
+                        _this.myTalkResult.splice(index, 1);
+                        index = _this.listResult.indexOf(currList);
+                        _this.listResult.splice(index, 1);
+                    }
+                });
+            },
+            // 点赞
+            zan: function (currList) {
+                var _this = this;
+                if(currList.zanPerson.indexOf(_this.username) != -1){
+                    $.get('/docancelzan',{
+                        '_id':currList._id
+                    }, function (data, status) {
+                        if(data.result==1){
+                            //取消赞高亮
+                            currList.zanPerson.splice(currList.zanPerson.indexOf(_this.username),1);
+                            currList.zanNum -= 1;
+                            return;
+                        }
+                    });
+                }else{
+                    $.get('/dozan', {
+                        '_id':currList._id
+                    }, function(data, status){
+                        if(data.result==1){
+                            // 添加赞高亮
+                            currList.zanPerson.push(_this.username);
+                            currList.zanNum += 1;
+                            return;
+                        }
+                    });
+                }
+            },
+            //回复按钮
+            replayBtn: function(currList){
+                var _this = this;
+                if(_this.replyTextarea.length==0){
+                    return;
+                }
+                $.get('/replay',{
+                    'textContent':_this.replyTextarea,
+                    'replyUsername': currList.username,
+                    '_id': currList._id
+                }, function(data, status){
+                    if(data.result==1){
+                        currList.commentContent.unshift({
+                            'replyUser':data.replyUser,
+                            'replyContent':_this.replyTextarea,
+                            'replyTime':data.replyTime
+                        });
+                        currList.commentNum += 1;
+                        _this.replyTextarea = '';
+                    }
+                });
+            },
+            // 评论中回复
+            replyToUser: function (comment) {
+                this.replyTextarea = '@'+comment.replyUser+'： ';
+            },
+            // 修改密码模态框的确定按钮
+            updatePwd: function () {
+                var oldPwd = document.getElementById('old-pwd').value;
+                var newPwd = document.getElementById('new-pwd').value;
+                var okNewPwd = document.getElementById('ok-new-pwd').value;
+                console.log(oldPwd,newPwd,okNewPwd);
+                var _this = this;
+                if(!oldPwd || !newPwd || !okNewPwd){
+
+                    _this.alertDis2 = true;
+                    _this.text1 = '注意！';
+                    _this.text2 = '输入框不能为空';
+                    return;
+                }
+
+                if(oldPwd.length < 6 || newPwd.length < 6 || okNewPwd.length < 6){
+
+                    _this.alertDis2 = true;
+                    _this.text1 = '注意！';
+                    _this.text2 = '密码应不少于6位';
+                    return;
+                }
+
+                if(newPwd != okNewPwd){
+
+                    _this.alertDis2 = true;
+                    _this.text1 = '注意！';
+                    _this.text2 = '两次输入的密码不一致';
+                    return;
+                }
+
+                $.post('/updatepwd', {
+                    oldPwd:oldPwd,
+                    newPwd:newPwd
+                }, function(data, status){
+                    if(data.result==1){
+                        $('#modify-profile').modal('hide');
+                        window.location.href = '/';
+                    }
+                    else if(data.result==-1){
+
+                        _this.alertDis2 = true;
+                        _this.text1 = '未知错误！';
+                        _this.text2 = '修改失败';
+                    }
+                    else if(data.result==-2){
+
+                        _this.alertDis2 = true;
+                        _this.text1 = '修改失败！';
+                        _this.text2 = '旧密码不正确';
+                    }
+                    else if(data.result==-3){
+
+                        _this.alertDis2 = true;
+                        _this.text1 = '修改失败！';
+                        _this.text2 = '新密码不能与旧密码相同';
+                    }
+                });
+            }
+        }
+    });
+
+    // 上传修改头像
+    //做个下简易的验证  大小 格式
+    $('#avatarInput').on('change', function (e) {
+        var filemaxsize = 1024 * 5; //5M
+        var target = $(e.target);
+        var Size = target[0].files[0].size / 1024;
+        if (Size > filemaxsize) {
+            alert('图片过大，请重新选择!');
+            $(".avatar-wrapper").childre().remove;
+            return false;
+        }
+        if (!this.files[0].type.match(/image.*/)) {
+            alert('请选择正确的图片!')
+        } else {
+            var filename = document.querySelector("#avatar-name");
+            var texts = document.querySelector("#avatarInput").value;
+            var teststr = texts;
+            testend = teststr.match(/[^\\]+\.[^\(]+/i);
+            filename.innerHTML = testend;
+        }
+
+    });
+    $(".avatar-save").on("click", function () {
+        if($.trim($('#avatar-name').text()).length==0){
+            return;
+        }
+        var img_lg = document.getElementById('imageHead');
+        // 截图小的显示框内的内容
+        html2canvas(img_lg, {
+            allowTaint: true,
+            taintTest: false,
+            onrendered: function (canvas) {
+                canvas.id = "mycanvas";
+                //生成base64图片数据
+                var dataUrl = canvas.toDataURL("image/jpeg");
+                var newImg = document.createElement("img");
+                newImg.src = dataUrl;
+                imagesAjax(dataUrl)
+            }
+        });
+    });
+    function imagesAjax(src) {
+        var data = {};
+        data.img = src;
+        data.jid = $('#jid').val();
+        $.ajax({
+            url: "/modiavatar",
+            data: data,
+            type: "POST",
+            dataType: 'json',
+            success: function (re) {
+                window.location.href = '/';
+            }
+        });
+    }
+
+</script>
 </body>
 </html>
