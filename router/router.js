@@ -7,6 +7,7 @@ var ObjectID = require('mongodb').ObjectID;
 
 // vue初始化发起的get请求处理
 exports.getIndexData = function(req, res, next){
+
     db.find('talkList',{},{
         pageAmount:0,
         page:0,
