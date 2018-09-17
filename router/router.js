@@ -1,4 +1,5 @@
 var formidable = require('formidable');
+var date = require('silly-datetime');
 var db = require('../models/db.js');
 var md5 = require('../models/md5.js');
 var fs = require('fs');
@@ -39,6 +40,7 @@ exports.getIndexData = function(req, res, next){
 // 发送动态业务
 exports.sendState = function(req, res, next){
     var talkContent = req.query.talkContent;
+    var talkImages = req.query.talkImages;
     db.insertOne('talkList',{
         'username':req.session.username,
         'avatarPath':req.session.avatar,
@@ -47,7 +49,8 @@ exports.sendState = function(req, res, next){
         'zanNum':0,
         'zanPerson':[],
         'commentNum':0,
-        'commentContent':[]
+        'commentContent':[],
+        'talkImages':talkImages
     }, function(err, result){
         if(err){
             res.json({'result':-1});
@@ -58,6 +61,40 @@ exports.sendState = function(req, res, next){
         }else{
             res.json({'result':-1});
         }
+    });
+};
+
+//上传图片
+exports.postImg = function(req, res, next){
+
+    var form = new formidable.IncomingForm();
+    form.multiples = true;
+    form.uploadDir = "./public/images";
+
+    form.parse(req, function(err, fields, files) {
+        var files = files.imgs;
+        var imgList = [];
+        for(let i=0;i<files.length;i++){
+            console.log(files[i].path, files[i].name);
+            var time = date.format(new Date(), 'YYYYMMDDHHmmss');
+            var ran = parseInt(Math.random() * 89999 + 10000);
+            var extname = '.png';
+            var prefix = "./public/images/"+ req.session.username + "/";
+            var newName = prefix + time + ran + extname;
+            if(!fs.existsSync(prefix)){
+                fs.mkdirSync(prefix);
+            }
+            fs.rename(files[i].path, newName, function(err){
+                if(err){
+                    console.log(err);
+                }
+                imgList.push(newName);
+                if(imgList.length==files.length){
+                    res.json({'result':1, 'imgList':imgList});
+                }
+            });
+        }
+
     });
 };
 

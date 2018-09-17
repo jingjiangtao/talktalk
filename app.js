@@ -29,6 +29,8 @@ app.get('/quit', router.quit);
 app.post('/modiavatar', router.modifyAvatar);
 // 发送动态
 app.get('/sendstate', router.sendState);
+//上传图片
+app.post('/uploadImg',router.postImg);
 //点赞
 app.get('/dozan', router.doZan);
 //取消点赞
