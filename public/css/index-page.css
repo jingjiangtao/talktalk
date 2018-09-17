@@ -251,9 +251,11 @@ label,.modal-title{
     color:#337ab7;
 }
 #file-upload{
-    /*opacity:0;*/
-    /*height: 0px;*/
     display: none;
+}
+.talk-images img{
+    margin-right: 5px;
+    border: 1px #337ab7 solid;
 }
 
 #btn-send{

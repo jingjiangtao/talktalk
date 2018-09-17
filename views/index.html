@@ -122,10 +122,8 @@
 
                 <span id="last-num" class="col-lg-1 col-lg-offset-9">{{lastNum}}</span>
                 <button v-on:click="sendStatus" id="btn-send" type="button" class="btn btn-success col-lg-1">发布</button>
-                <div v-if="true" class="col-lg-12">
-                    <img src="/images/tos/2018091717374425515.png" class="thumbnail col-lg-3">
-                    <img src="/images/tos/2018091717374450824.png" class="thumbnail col-lg-3">
-                    <img src="/images/tos/2018091717374469839.png" class="thumbnail col-lg-3">
+                <div v-if="imagesShow" class="col-lg-12 talk-images">
+                    <img v-for="file in files" v-bind:src="file" class="thumbnail col-lg-2">
                 </div>
             </div>
 
@@ -143,6 +141,9 @@
                     </div>
                     <div class="panel-body">
                         <textarea v-bind:value="result.talkContent" disabled="disabled" class="col-lg-12 talk-content" rows="5"></textarea>
+                        <div v-if="showImagesCon(result)" class="col-lg-12 talk-images">
+                            <img v-for="image in result.talkImages" v-bind:src="image" class="thumbnail col-lg-2">
+                        </div>
                     </div>
                     <div class="panel-footer">
                         <span class="time">{{(new Date(result.time)).toLocaleString()}}</span>
@@ -200,6 +201,9 @@
                 </div>
                 <div class="panel-body">
                     <textarea v-bind:value="result.talkContent" disabled="disabled" class="col-lg-12 talk-content" rows="5"></textarea>
+                    <div v-if="showImagesCon(result)" class="col-lg-12 talk-images">
+                        <img v-for="image in result.talkImages" v-bind:src="image" class="thumbnail col-lg-2">
+                    </div>
                 </div>
                 <div class="panel-footer">
                     <span class="time">{{(new Date(result.time)).toLocaleString()}}</span>
@@ -416,7 +420,8 @@
             text1:'',
             text2:'',
             //文件选择
-            files:null
+            files:null,
+            imagesShow:false
         },
         created: function () {
             var _this = this;
@@ -571,17 +576,25 @@
                             username:_this.username,
                             zanNum:0,
                             zanPerson:[],
-                            talkImages:_this.files
+                            talkImages:_this.files,
                         };
                         _this.listResult.unshift(newStatus);
                         _this.myTalkResult.unshift(newStatus);
                         _this.inputStatusContent='';
                         _this.lastNum = 300;
-
+                        _this.imagesShow = false;
                     }else{
 
                     }
                 });
+            },
+            //判断动态列表中的图片容器是否需要显示
+            showImagesCon: function(result){
+                if(!result.talkImages || result.talkImages.length==0){
+                    return false;
+                }else{
+                    return true;
+                }
             },
             // 监听发送动态文本框的改变
             changeLastNum: function(){
@@ -800,6 +813,7 @@
                     success: function (re) {
                         if(re.result==1){
                            _this.files = re.imgList;
+                           _this.imagesShow = true;
                         }
                     }
                 });

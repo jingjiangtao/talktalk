@@ -1,9 +1,9 @@
-var formidable = require('formidable');
-var date = require('silly-datetime');
-var db = require('../models/db.js');
-var md5 = require('../models/md5.js');
-var fs = require('fs');
-var ObjectID = require('mongodb').ObjectID;
+const formidable = require('formidable');
+const date = require('silly-datetime');
+const db = require('../models/db.js');
+const md5 = require('../models/md5.js');
+const fs = require('fs');
+const ObjectID = require('mongodb').ObjectID;
 
 
 // vue初始化发起的get请求处理
@@ -71,12 +71,22 @@ exports.postImg = function(req, res, next){
     var form = new formidable.IncomingForm();
     form.multiples = true;
     form.uploadDir = "./public/images";
-
     form.parse(req, function(err, fields, files) {
-        var files = files.imgs;
+        if(err){
+            console.log(err);
+            return;
+        }
+        if(!files){
+            return;
+        }
+        var fileList = [];
+        if(files.imgs instanceof Array){
+            fileList = files.imgs;
+        }else{
+            fileList.push(files.imgs);
+        }
         var imgList = [];
-        for(let i=0;i<files.length;i++){
-            console.log(files[i].path, files[i].name);
+        for(let i=0;i<fileList.length;i++){
             var time = date.format(new Date(), 'YYYYMMDDHHmmss');
             var ran = parseInt(Math.random() * 89999 + 10000);
             var extname = '.png';
@@ -85,17 +95,10 @@ exports.postImg = function(req, res, next){
             if(!fs.existsSync(prefix)){
                 fs.mkdirSync(prefix);
             }
-            fs.rename(files[i].path, newName, function(err){
-                if(err){
-                    console.log(err);
-                }
-                imgList.push(newName);
-                if(imgList.length==files.length){
-                    res.json({'result':1, 'imgList':imgList});
-                }
-            });
+            fs.renameSync(fileList[i].path, newName);
+            imgList.push(newName.substring(8));
         }
-
+        res.json({'result':1, 'imgList':imgList});
     });
 };
 
@@ -181,6 +184,24 @@ exports.replay = function(req, res, next){
 //删除说说业务
 exports.deleteTalk = function(req, res, next){
     var _id = req.query._id;
+    db.find('talkList',{'_id':ObjectID(_id)},{
+        pageAmount:0,
+        page:0,
+        sort:{}
+    }, function (err, result) {
+        if(err){
+            console.log(err);
+            return;
+        }
+        var imageList = result[0].talkImages;
+        if(imageList instanceof Array){
+            for(let i=0;i<imageList.length;i++){
+                var path = './public'+imageList[i];
+                fs.unlinkSync(path);
+            }
+        }
+    });
+
     db.deleteMany('talkList', {
         '_id':ObjectID(_id)
     },function(err, result){
