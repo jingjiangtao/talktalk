@@ -113,10 +113,20 @@
         <div class="jumbotron text-content-bg">
         <div class="container">
             <div class="row">
-                    <textarea v-model.trim="inputStatusContent" v-on:keyup="changeLastNum" id="text-content" maxlength="300" class="form-control col-lg-12" rows="7"
+                <textarea v-model.trim="inputStatusContent" v-on:keyup="changeLastNum" id="text-content" maxlength="300" class="form-control col-lg-12" rows="7"
                               placeholder="有什么想和大家分享的？"></textarea>
-                <span id="last-num" class="col-lg-1 col-lg-offset-10">{{lastNum}}</span>
+                <div class="col-lg-1">
+                    <label id="select-picture" for="file-upload" class="glyphicon glyphicon-picture"></label>
+                    <input v-on:change="uploadImg($event)" id="file-upload" name="imageUpload" type="file" multiple=true>
+                </div>
+
+                <span id="last-num" class="col-lg-1 col-lg-offset-9">{{lastNum}}</span>
                 <button v-on:click="sendStatus" id="btn-send" type="button" class="btn btn-success col-lg-1">发布</button>
+                <div v-if="true" class="col-lg-12">
+                    <img src="/public/images/tos/2018091717374425515.png" class="thumbnail col-lg-3">
+                    <img src="/public/images/tos/2018091717374450824.png" class="thumbnail col-lg-3">
+                    <img src="/public/images/tos/2018091717374469839.png" class="thumbnail col-lg-3">
+                </div>
             </div>
 
         </div>
@@ -404,7 +414,9 @@
             alertDis2:false,
             //警告框中的信息
             text1:'',
-            text2:''
+            text2:'',
+            //文件选择
+            files:null
         },
         created: function () {
             var _this = this;
@@ -545,7 +557,8 @@
                 }
                 var _this = this;
                 $.get('/sendstate', {
-                    'talkContent': this.inputStatusContent
+                    'talkContent': this.inputStatusContent,
+                    'talkImages':_this.files
                 }, function(data, status){
                     if(data.result==1){
                         var newStatus = {
@@ -557,7 +570,8 @@
                             time:(new Date()),
                             username:_this.username,
                             zanNum:0,
-                            zanPerson:[]
+                            zanPerson:[],
+                            talkImages:_this.files
                         };
                         _this.listResult.unshift(newStatus);
                         _this.myTalkResult.unshift(newStatus);
@@ -761,6 +775,34 @@
                         _this.text2 = '新密码不能与旧密码相同';
                     }
                 });
+            },
+            uploadImg: function (event) {
+                var _this = this;
+                this.files = event.target.files;
+                let form = new FormData();
+                var imgNum = 0;
+                if(this.files.length>3){
+                    imgNum = 3;
+                }else{
+                    imgNum = this.files.length;
+                }
+                for(let i=0;i<imgNum;i++){
+                    form.append('imgs', this.files[i]);
+                }
+
+                $.ajax({
+                    url: "/uploadImg",
+                    data: form,
+                    type: "post",
+                    processData: false,
+                    contentType : false,
+                    dataType: 'json',
+                    success: function (re) {
+                        if(re.result==1){
+                           _this.files = re.imgList;
+                        }
+                    }
+                });
             }
         }
     });
@@ -820,6 +862,7 @@
             }
         });
     }
+
 
 </script>
 </body>

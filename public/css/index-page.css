@@ -241,6 +241,21 @@ label,.modal-title{
     padding-bottom: 30px;
     border-bottom: 1px #ccc solid;
 }
+#select-picture{
+    font-size: 26px;
+    color: #aaa;
+    margin-top:8px;
+    cursor: pointer;
+}
+#select-picture:hover{
+    color:#337ab7;
+}
+#file-upload{
+    /*opacity:0;*/
+    /*height: 0px;*/
+    display: none;
+}
+
 #btn-send{
     border-radius: 3px;
     margin-top:8px;
