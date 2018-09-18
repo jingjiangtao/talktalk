@@ -1,11 +1,26 @@
-/* Move down content because we have a fixed navbar that is 50px tall */
+/*动画*/
+.slide-enter-active {
+    transition: all .5s ease;
+}
+.slide-enter {
+    transform: translateY(-100px);
+}
+
+.slide-image-enter-active {
+    transition: all .2s ease;
+}
+.slide-image-enter{
+    transform: translateY(-5px) rotate(5deg);
+}
+
+
 body {
     padding-top: 50px;
     padding-bottom: 20px;
     font-family:"Microsoft YaHei";
-    /*background-color: #9cc6f3;*/
+    background-color: #9cc6f3;
     /*background: url("../images/background-img.jpg");*/
-    background-color: #FFFF99;
+    /*background-color: #FFFF99;*/
  }
 
 nav{
@@ -48,7 +63,11 @@ hr{
 .delete-talk:hover{
     color:#e20000;
 }
-
+.my-talklist .panel:hover{
+    transition: all .3s ease;
+    transform: scale(1.01, 1.01);
+    box-shadow: 8px 8px 3px #888888;
+}
 /*成员列表页面样式*/
 .member-list .panel-list{
     padding: 50px 50px 10px;
@@ -86,6 +105,11 @@ hr{
 .member-list .user-info span{
     margin-left: 2px;
     margin-right: 2px;
+}
+.member-list .panel:hover{
+    transition: all .3s ease;
+    transform: scale(1.1, 1.1);
+    box-shadow: 10px 10px 5px #888888;
 }
 
 /*警告框的样式*/
@@ -143,6 +167,15 @@ hr{
 }
 .zaned{
     color:#E20000 !important;
+}
+.main-container .zan-number i:hover{
+    transition: all .2s ease;
+    transform: scale(1.5, 1.5);
+}
+.main-container .panel:hover{
+    transition: all .3s ease;
+    transform: scale(1.01, 1.01);
+    box-shadow: 8px 8px 3px #888888;
 }
 .comment-a:hover{
     color:#E20000 !important;
@@ -220,7 +253,8 @@ label,.modal-title{
 
 
 .jumbotron{
-    background-color: #ffe411;
+    /*background-color: #ffe411;*/
+    background-color: #9cc6f3;
     color: #404040;
     -webkit-border-radius: 0px !important;
     -moz-border-radius: 0px !important;
@@ -254,8 +288,9 @@ label,.modal-title{
     display: none;
 }
 .talk-images img{
-    margin-right: 5px;
+    margin-right: 10px;
     border: 1px #337ab7 solid;
+    /*box-shadow: 5px 5px 1px #888888;*/
 }
 
 #btn-send{
@@ -277,3 +312,4 @@ label,.modal-title{
 .test-border{
     border:1px red solid;
 }
+
