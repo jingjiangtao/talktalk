@@ -69,13 +69,13 @@
         </div><!--/.navbar-collapse -->
     </div>
 </nav>
-<!-- Main jumbotron for a primary marketing message or call to action -->
+
 <div v-if="unlogin" class="container-fluid brief-fluid">
         <div class="jumbotron">
             <div class="container">
-
+                <transition name="slide">
                 <alert-box v-if="alertDis" v-bind:text1="text1" v-bind:text2="text2"></alert-box>
-
+                </transition>
                 <h1>欢迎使用小小说说</h1>
                 <p>要查看或发布动态，请先登录</p>
 
@@ -108,7 +108,9 @@
     </div>
 
 <div v-else>
+
     <!--全部说说列表-->
+    <transition name="slide" appear>
     <div v-if="mainContainer" class="container main-container">
         <div class="jumbotron text-content-bg">
         <div class="container">
@@ -117,14 +119,16 @@
                               placeholder="有什么想和大家分享的？"></textarea>
                 <div class="col-lg-1">
                     <label id="select-picture" for="file-upload" class="glyphicon glyphicon-picture"></label>
-                    <input v-on:change="uploadImg($event)" id="file-upload" name="imageUpload" type="file" multiple=true>
+                    <input v-on:change="uploadImg($event)" id="file-upload" name="imageUpload" type="file" accept="image/*" multiple=true>
                 </div>
 
                 <span id="last-num" class="col-lg-1 col-lg-offset-9">{{lastNum}}</span>
                 <button v-on:click="sendStatus" id="btn-send" type="button" class="btn btn-success col-lg-1">发布</button>
-                <div v-if="imagesShow" class="col-lg-12 talk-images">
-                    <img v-for="file in files" v-bind:src="file" class="thumbnail col-lg-2">
-                </div>
+                <transition name="slide-image">
+                    <div v-if="imagesShow" class="col-lg-12 talk-images">
+                        <img v-for="file in files" v-bind:src="file" class="thumbnail col-lg-2">
+                    </div>
+                </transition>
             </div>
 
         </div>
@@ -132,7 +136,6 @@
     </div>
         <div class="container">
             <div class="panel-list">
-
                 <div v-for="(result, index) in listResult" v-bind:class="isOwn(result)">
                     <span class="_id">{{result._id}}</span>
                     <div class="panel-heading">
@@ -180,7 +183,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div> <!-- /container -->
         <hr>
@@ -190,7 +192,10 @@
             </footer>
         </div>
     </div>
+    </transition>
+
     <!--我的说说列表-->
+    <transition name="slide">
     <div v-if="myTalklist" class="container my-talklist">
         <div class="panel-list">
             <div v-for="(result, index) in myTalkResult" class="panel panel-primary">
@@ -246,7 +251,10 @@
             </footer>
         </div>
     </div>
+    </transition>
+
     <!--成员列表-->
+    <transition name="slide">
     <div v-if="memberlist" class="container member-list">
         <div class="panel-list">
             <div v-for="(result, index) in memberResult" class="panel panel-default">
@@ -274,6 +282,7 @@
             </footer>
         </div>
     </div>
+    </transition>
 </div>
 
 
@@ -382,10 +391,10 @@
     Vue.component('alert-box', {
         props:['text1','text2'],
         template: `
-    <div class="alert alert-danger" role="alert">
-         <strong>{{text1}}</strong><span>{{text2}}</span>
-    </div>
-  `
+                    <div class="alert alert-danger" role="alert">
+                         <strong>{{text1}}</strong><span>{{text2}}</span>
+                    </div>
+                  `
     });
 
 
@@ -439,6 +448,7 @@
             });
         },
         methods: {
+
             //判断当前的动态点赞图标是否应该高亮
             isZan: function (result) {
 
@@ -583,6 +593,7 @@
                         _this.inputStatusContent='';
                         _this.lastNum = 300;
                         _this.imagesShow = false;
+                        _this.files = null;
                     }else{
 
                     }
@@ -789,6 +800,7 @@
                     }
                 });
             },
+            // 上传图片
             uploadImg: function (event) {
                 var _this = this;
                 this.files = event.target.files;
@@ -814,10 +826,12 @@
                         if(re.result==1){
                            _this.files = re.imgList;
                            _this.imagesShow = true;
+                           document.getElementById('file-upload').value = '';
                         }
                     }
                 });
-            }
+            },
+
         }
     });
 
