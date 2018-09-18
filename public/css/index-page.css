@@ -18,9 +18,9 @@ body {
     padding-top: 50px;
     padding-bottom: 20px;
     font-family:"Microsoft YaHei";
-    background-color: #9cc6f3;
+    /*background-color: #9cc6f3;*/
     /*background: url("../images/background-img.jpg");*/
-    /*background-color: #FFFF99;*/
+    background-color: #FFFF99;
  }
 
 nav{
@@ -253,8 +253,8 @@ label,.modal-title{
 
 
 .jumbotron{
-    /*background-color: #ffe411;*/
-    background-color: #9cc6f3;
+    background-color: #ffe411;
+    /*background-color: #9cc6f3;*/
     color: #404040;
     -webkit-border-radius: 0px !important;
     -moz-border-radius: 0px !important;
