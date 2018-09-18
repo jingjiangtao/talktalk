@@ -117,7 +117,7 @@
                               placeholder="有什么想和大家分享的？"></textarea>
                 <div class="col-lg-1">
                     <label id="select-picture" for="file-upload" class="glyphicon glyphicon-picture"></label>
-                    <input v-on:change="uploadImg($event)" id="file-upload" name="imageUpload" type="file" multiple=true>
+                    <input v-on:change="uploadImg($event)" id="file-upload" name="imageUpload" type="file" accept="image/*" multiple=true>
                 </div>
 
                 <span id="last-num" class="col-lg-1 col-lg-offset-9">{{lastNum}}</span>
@@ -583,6 +583,7 @@
                         _this.inputStatusContent='';
                         _this.lastNum = 300;
                         _this.imagesShow = false;
+                        _this.files = null;
                     }else{
 
                     }
@@ -814,6 +815,7 @@
                         if(re.result==1){
                            _this.files = re.imgList;
                            _this.imagesShow = true;
+                           document.getElementById('file-upload').value = '';
                         }
                     }
                 });

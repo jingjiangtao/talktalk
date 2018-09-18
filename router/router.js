@@ -90,10 +90,15 @@ exports.postImg = function(req, res, next){
             var time = date.format(new Date(), 'YYYYMMDDHHmmss');
             var ran = parseInt(Math.random() * 89999 + 10000);
             var extname = '.png';
-            var prefix = "./public/images/"+ req.session.username + "/";
-            var newName = prefix + time + ran + extname;
-            if(!fs.existsSync(prefix)){
-                fs.mkdirSync(prefix);
+            var prefix1 = "./public/images/"+ req.session.username + "/";
+            var prefix2 = "./public/images/"+ req.session.username + "/"+time.substring(0, 8)+"/";
+            var newName = prefix2 + time + ran + extname;
+
+            if(!fs.existsSync(prefix1)){
+                fs.mkdirSync(prefix1);
+            }
+            if(!fs.existsSync(prefix2)){
+                fs.mkdirSync(prefix2);
             }
             fs.renameSync(fileList[i].path, newName);
             imgList.push(newName.substring(8));
