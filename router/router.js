@@ -42,6 +42,17 @@ exports.getIndexData = function(req, res, next){
 exports.sendState = function(req, res, next){
     var talkContent = req.query.talkContent;
     var talkImages = req.query.talkImages;
+    db.updateMany('user',{
+        'username':req.session.username
+    },{
+        $inc:{'sumTalk': 1}
+    }, function (err, result) {
+        if(err){
+            res.json({'result':-1});
+            console.log(err);
+            return;
+        }
+    });
     db.insertOne('talkList',{
         'username':req.session.username,
         'avatarPath':req.session.avatar,
@@ -110,6 +121,18 @@ exports.postImg = function(req, res, next){
 // 点赞业务
 exports.doZan = function(req, res, next){
     var _id = req.query._id;
+    var username = req.query.username;
+    db.updateMany('user',{
+        'username':username
+    },{
+        $inc:{'sumZan': 1}
+    }, function (err, result) {
+        if(err){
+            res.json({'result':-1});
+            console.log(err);
+            return;
+        }
+    });
     db.updateMany('talkList',{
         '_id':ObjectID(_id)
     },{
@@ -133,6 +156,18 @@ exports.doZan = function(req, res, next){
 // 取消点赞业务
 exports.doCancelZan = function(req, res, next){
     var _id = req.query._id;
+    var username = req.query.username;
+    db.updateMany('user',{
+        'username':username
+    },{
+        $inc:{'sumZan': -1}
+    }, function (err, result) {
+        if(err){
+            res.json({'result':-1});
+            console.log(err);
+            return;
+        }
+    });
     db.updateMany('talkList',{
         '_id':ObjectID(_id)
     },{
@@ -189,6 +224,17 @@ exports.replay = function(req, res, next){
 //删除说说业务
 exports.deleteTalk = function(req, res, next){
     var _id = req.query._id;
+    db.updateMany('user',{
+        'username':req.session.username
+    },{
+        $inc:{'sumTalk': -1}
+    }, function (err, result) {
+        if(err){
+            res.json({'result':-1});
+            console.log(err);
+            return;
+        }
+    });
     db.find('talkList',{'_id':ObjectID(_id)},{
         pageAmount:0,
         page:0,
@@ -221,34 +267,16 @@ exports.deleteTalk = function(req, res, next){
 
 // 列出所有成员和必要信息
 exports.allMembers = function(req, res, next){
-    var userList = [];
-    var talkList = [];
     db.find('user',{},{
         pageAmount:0,
         page:0,
-        sort:{'username':1}
-    },function(err, user){
+        sort:{'sumZan':-1,'sumTalk':-1}
+    },function(err, userList){
         if(err){
             res.json({'result':-1});
             return;
         }
-        userList = user;
-        db.find('talkList',{},{
-            pageAmount:0,
-            page:0,
-            sort:{'username':1}
-        },function(err, result){
-            if(err){
-                res.json({'result':-1});
-                return;
-            }
-            talkList = result;
-            res.json({
-                'result':1,
-                'userlist':userList,
-                'talklist':talkList
-            });
-        });
+        res.json({'result':1,'userList':userList});
     });
 };
 
@@ -278,6 +306,8 @@ exports.doSign = function(req, res, next){
                db.insertOne('user',{
                    'username':username,
                    'password':password,
+                   'sumZan':0,
+                   'sumTalk':0,
                    'avatar':'default.jpg'
                }, function(err, result){
                    if(err){

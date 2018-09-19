@@ -263,13 +263,13 @@
                 </div>
                 <div class="panel-body list-inline">
                     <li class="userinfo-img">
-                        <img v-bind:src="'/avatar/'+ result.avatarPath" class="img-circle">
+                        <img v-bind:src="'/avatar/'+ result.avatar" class="img-circle">
                     </li>
                     <li class="user-info-li">
                         <ul class="user-info">
                             <li class="username text-primary"><a href="javascript:;">   {{result.username}}   </a></li>
+                            <li class="brief-userinfo">总共获得过<span class="text-primary">  {{result.sumZan}}  </span>次赞</li>
                             <li class="brief-userinfo">总共发过<span class="text-primary">  {{result.sumTalk}}  </span>条动态</li>
-                            <li class="brief-userinfo">获得过<span class="text-primary">  {{result.sumZan}}  </span>次赞</li>
                         </ul>
                     </li>
                 </div>
@@ -643,34 +643,7 @@
                 var _this = this;
                 $.get('/allmembers', function(data, status) {
                     if (data.result == 1) {
-                        var userList = data.userlist;
-                        var talkList = data.talklist;
-                        var rst = [];
-                        for (var i = 0; i < userList.length; i++) {
-                            var sumZan = 0;
-                            var sumTalk = 0;
-                            var username = userList[i].username;
-                            var avatarPath = userList[i].avatar;
-                            for (var j = 0; j < talkList.length; j++) {
-                                if (talkList[j].username == username) {
-                                    sumZan += talkList[j].zanNum;
-                                    sumTalk++;
-                                }
-                            }
-                            rst.push({
-                                'username': username,
-                                'avatarPath': avatarPath,
-                                'sumZan': sumZan,
-                                'sumTalk': sumTalk
-                            });
-                        }
-                        rst.sort(function (a, b) {
-                            var s = a.sumZan;
-                            var t = b.sumZan;
-                            if (s < t) return 1;
-                            if (s > t) return -1;
-                        });
-                        _this.memberResult = rst;
+                        _this.memberResult = data.userList;
                     }
                 });
             },
@@ -693,7 +666,8 @@
                 var _this = this;
                 if(currList.zanPerson.indexOf(_this.username) != -1){
                     $.get('/docancelzan',{
-                        '_id':currList._id
+                        '_id':currList._id,
+                        'username':currList.username
                     }, function (data, status) {
                         if(data.result==1){
                             //取消赞高亮
@@ -704,7 +678,8 @@
                     });
                 }else{
                     $.get('/dozan', {
-                        '_id':currList._id
+                        '_id':currList._id,
+                        'username':currList.username
                     }, function(data, status){
                         if(data.result==1){
                             // 添加赞高亮
