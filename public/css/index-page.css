@@ -66,7 +66,7 @@ hr{
 .my-talklist .panel:hover{
     transition: all .3s ease;
     transform: scale(1.005, 1.005);
-    box-shadow: 5px 5px 1px #888888;
+    box-shadow: 1px 1px 1px #888888;
 }
 /*成员列表页面样式*/
 .member-list .panel-list{
@@ -108,8 +108,8 @@ hr{
 }
 .member-list .panel:hover{
     transition: all .3s ease;
-    transform: scale(1.1, 1.1);
-    box-shadow: 10px 10px 5px #888888;
+    transform: scale(1.05, 1.05);
+    box-shadow: 3px 3px 3px #888888;
 }
 
 /*警告框的样式*/
@@ -184,7 +184,7 @@ hr{
 .main-container .panel:hover{
     transition: all .3s ease;
     transform: scale(1.005, 1.005);
-    box-shadow: 5px 5px 1px #888888;
+    box-shadow: 1px 1px 1px #888888;
 }
 .comment-a:hover{
     color:#E20000 !important;
