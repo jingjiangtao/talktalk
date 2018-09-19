@@ -65,8 +65,8 @@ hr{
 }
 .my-talklist .panel:hover{
     transition: all .3s ease;
-    transform: scale(1.01, 1.01);
-    box-shadow: 8px 8px 3px #888888;
+    transform: scale(1.005, 1.005);
+    box-shadow: 5px 5px 1px #888888;
 }
 /*成员列表页面样式*/
 .member-list .panel-list{
@@ -122,6 +122,15 @@ hr{
 .avatar-img{
     border: #ccc solid 2px;
 }
+#my-avatar:hover{
+
+    transition: all .3s ease;
+    transform: translateY(15px) scale(1.5, 1.5);
+}
+#my-avatar{
+    cursor: pointer;
+    margin-top: 2px !important;
+}
 .navbar-right img{
     width: 44px;
     height: 44px;
@@ -174,8 +183,8 @@ hr{
 }
 .main-container .panel:hover{
     transition: all .3s ease;
-    transform: scale(1.01, 1.01);
-    box-shadow: 8px 8px 3px #888888;
+    transform: scale(1.005, 1.005);
+    box-shadow: 5px 5px 1px #888888;
 }
 .comment-a:hover{
     color:#E20000 !important;

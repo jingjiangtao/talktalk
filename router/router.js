@@ -28,12 +28,29 @@ exports.getIndexData = function(req, res, next){
                 if(s > t) return -1;
             });
         }
-
-        res.json({
-            'unlogin':!req.session.login,
-            'username':req.session.username,
-            'avatar':req.session.avatar,
-            'listResult':result
+        var listResult = result;
+        db.find('user',{
+            'username': req.session.username
+        },{
+            pageAmount:0,
+            page:0,
+            sort:{}
+        }, function (err, result) {
+            if(err){
+                res.json({'result':-1});
+                return;
+            }
+            var signature = '';
+            if(result.length != 0){
+                signature = result[0].signature
+            }
+            res.json({
+                'unlogin':!req.session.login,
+                'username':req.session.username,
+                'avatar':req.session.avatar,
+                'listResult':listResult,
+                'signature':signature
+            });
         });
     });
 };
@@ -308,6 +325,7 @@ exports.doSign = function(req, res, next){
                    'password':password,
                    'sumZan':0,
                    'sumTalk':0,
+                   'signature':'',
                    'avatar':'default.jpg'
                }, function(err, result){
                    if(err){
@@ -472,5 +490,22 @@ exports.modifyAvatar = function(req, res, next){
                 });
             }
         });
+    });
+};
+
+
+// 修改签名
+exports.modifySign = function (req, res, next) {
+    var signature = req.query.signature;
+    db.updateMany('user',{
+        'username':req.session.username
+    },{
+        $set:{'signature':signature}
+    },function (err, result) {
+        if(err){
+            res.json({'result':-1});
+            return;
+        }
+        res.json({'result':1});
     });
 };

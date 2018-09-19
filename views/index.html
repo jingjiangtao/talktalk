@@ -18,6 +18,7 @@
     <link href="/css/index-page.css" rel="stylesheet">
     <link href="/css/cropper.min.css" rel="stylesheet">
     <link href="/css/sitelogo.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/element.css">
 </head>
 
 <body>
@@ -57,9 +58,25 @@
 
             <ul v-else class="nav navbar-nav navbar-right">
                 <li>
-                    <a v-on:click="myTalk" href="javascript:;">
-                        <img v-bind:src="'/avatar/'+avatar" class="img-circle avatar-img">
-                    </a>
+                    <el-popover
+                            placement="left"
+                            width="250"
+                            trigger="hover">
+                        <div class="own-brif-info">
+                            <div>
+                                <span >昵称：</span>
+                                <span class="text-primary">{{username}}</span>
+                            </div>
+                            <div>
+                                <span >签名：</span>
+                                <span class="text-primary">{{signature}}</span>
+                            </div>
+                        </div>
+                        <a slot="reference" href="#" v-on:click="myTalk">
+                            <img v-bind:src="'/avatar/'+avatar" id="my-avatar" class="img-circle avatar-img">
+                        </a>
+                    </el-popover>
+
                 </li>
                 <li><a href="#" class="own-username">{{username}}</a></li>
                 <li><a href="#" data-toggle="modal" data-target="#modify-profile">修改个人资料</a></li>
@@ -68,7 +85,7 @@
 
         </div><!--/.navbar-collapse -->
     </div>
-</nav>
+    </nav>
 
 <div v-if="unlogin" class="container-fluid brief-fluid">
         <div class="jumbotron">
@@ -269,7 +286,7 @@
                         <ul class="user-info">
                             <li class="username text-primary"><a href="javascript:;">   {{result.username}}   </a></li>
                             <li class="brief-userinfo">总共获得过<span class="text-primary">  {{result.sumZan}}  </span>次赞</li>
-                            <li class="brief-userinfo">总共发过<span class="text-primary">  {{result.sumTalk}}  </span>条动态</li>
+                            <li class="brief-userinfo">目前有<span class="text-primary">  {{result.sumTalk}}  </span>条动态</li>
                         </ul>
                     </li>
                 </div>
@@ -298,12 +315,18 @@
             </div>
             <div class="modal-body">
                 <alert-box v-if="alertDis2" v-bind:text1="text1" v-bind:text2="text2"></alert-box>
+                <alert-box-success v-if="successDis" text1="成功" text2="签名修改成功"></alert-box-success>
                 <form>
                     <div class="form-group">
                         <img v-bind:src="'/avatar/'+avatar" class="img-circle center-block avatar-img">
                     </div>
                     <div class="form-group center-block">
                         <a href="#" id="modi-avatar" data-toggle="modal" data-target="#avatar-modal" class="center-block" >修改头像 &gt;</a>
+                    </div>
+                    <div class="form-group">
+                        <label for="signature" class="control-label">签名:</label>
+                        <input v-model="signature" type="text" class="form-control" id="signature" maxlength="40">
+                        <a href="javascript:;" v-on:click="modifySign" class="btn btn-default btn-sm pull-right">修改</a>
                     </div>
                     <div class="form-group">
                         <label for="old-pwd" class="control-label">旧密码:</label>
@@ -383,11 +406,12 @@
 <script src="/js/sitelogo.js"></script>
 <script src="/js/html2canvas.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="/js/vue.js"></script>
+<script src="/js/element.js"></script>
 
 <!--页面自身的js文件-->
 <script>
 
-
+    // 错误警告框
     Vue.component('alert-box', {
         props:['text1','text2'],
         template: `
@@ -397,6 +421,15 @@
                   `
     });
 
+    // 成功提示框
+    Vue.component('alert-box-success', {
+        props:['text1','text2'],
+        template: `
+                    <div class="alert alert-success" role="alert">
+                         <strong>{{text1}}</strong><span>{{text2}}</span>
+                    </div>
+                  `
+    });
 
     var indexShow = new Vue({
         el:'#show-index',
@@ -430,7 +463,11 @@
             text2:'',
             //文件选择
             files:null,
-            imagesShow:false
+            imagesShow:false,
+            //签名内容
+            signature:'',
+            // 签名修改提示框
+            successDis:false
         },
         created: function () {
             var _this = this;
@@ -439,6 +476,7 @@
                 _this.username = data.username;
                 _this.avatar = data.avatar;
                 _this.listResult = data.listResult;
+                _this.signature = data.signature;
                 for(var i=0;i<_this.listResult.length;i++){
                     if(_this.myTalkResult.indexOf(_this.listResult[i])==-1 &&
                         _this.listResult[i].username == _this.username){
@@ -721,7 +759,6 @@
                 var oldPwd = document.getElementById('old-pwd').value;
                 var newPwd = document.getElementById('new-pwd').value;
                 var okNewPwd = document.getElementById('ok-new-pwd').value;
-                console.log(oldPwd,newPwd,okNewPwd);
                 var _this = this;
                 if(!oldPwd || !newPwd || !okNewPwd){
 
@@ -806,7 +843,17 @@
                     }
                 });
             },
-
+            // 修改签名
+            modifySign: function () {
+                var _this = this;
+                $.get('/modifysign',{
+                    'signature':_this.signature
+                },function (data, status) {
+                    if(data.result==1){
+                        _this.successDis = true;
+                    }
+                });
+            }
         }
     });
 
@@ -865,7 +912,6 @@
             }
         });
     }
-
 
 </script>
 </body>
