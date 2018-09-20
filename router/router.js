@@ -5,7 +5,6 @@ const md5 = require('../models/md5.js');
 const fs = require('fs');
 const ObjectID = require('mongodb').ObjectID;
 
-
 // vue初始化发起的get请求处理
 exports.getIndexData = function(req, res, next){
 

@@ -14,7 +14,6 @@ app.use(express.static('./public'));
 app.use('/avatar',express.static('./avatar'));
 app.use(express.static('./views'));
 
-
 // vue初始化发起的get请求
 app.get('/getindexdata', router.getIndexData);
 // 注册业务
