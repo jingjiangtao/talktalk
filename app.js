@@ -14,7 +14,6 @@ app.use(express.static('./public'));
 app.use('/avatar',express.static('./avatar'));
 app.use(express.static('./views'));
 
-
 // vue初始化发起的get请求
 app.get('/getindexdata', router.getIndexData);
 // 注册业务
@@ -41,6 +40,8 @@ app.get('/replay', router.replay);
 app.get('/deletetalk', router.deleteTalk);
 // 列出所有用户
 app.get('/allmembers', router.allMembers);
+// 修改签名
+app.get('/modifysign', router.modifySign);
 //404
 app.use(function(req, res, next){
     res.redirect('/');

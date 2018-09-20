@@ -17,7 +17,7 @@
 body {
     padding-top: 50px;
     padding-bottom: 20px;
-    font-family:"Microsoft YaHei";
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
     /*background-color: #9cc6f3;*/
     /*background: url("../images/background-img.jpg");*/
     background-color: #FFFF99;
@@ -29,7 +29,9 @@ nav{
 .navbar-brand,.navbar-brand:hover{
     color: #000000 !important;
 }
-
+.own-username{
+    color: #000 !important;
+}
 hr{
     height:2px;
     size: 2px;
@@ -65,8 +67,8 @@ hr{
 }
 .my-talklist .panel:hover{
     transition: all .3s ease;
-    transform: scale(1.01, 1.01);
-    box-shadow: 8px 8px 3px #888888;
+    transform: scale(1.005, 1.005);
+    box-shadow: 1px 1px 1px #888888;
 }
 /*成员列表页面样式*/
 .member-list .panel-list{
@@ -82,21 +84,21 @@ hr{
     border: 2px solid #ccc;
 }
 .member-list .user-info{
-    list-style: none;
-    margin-bottom: 0px;
+    list-style-type: circle;
 }
 .member-list .user-info-li{
-
+    vertical-align: middle;
 }
 .member-list .userinfo-img{
     padding-right:20px;
     border-right:2px #ccc solid;
 }
 .member-list .username{
+    list-style: none;
     font-size:20px;
 }
 .member-list .brief-userinfo{
-    border-top: 5px solid #FFFFFF;
+    border-top: 5px solid #FFF;
 }
 .member-list .panel-body{
     padding-bottom:2px;
@@ -108,8 +110,8 @@ hr{
 }
 .member-list .panel:hover{
     transition: all .3s ease;
-    transform: scale(1.1, 1.1);
-    box-shadow: 10px 10px 5px #888888;
+    transform: scale(1.01, 1.01);
+    box-shadow: 1px 1px 1px #888888;
 }
 
 /*警告框的样式*/
@@ -121,6 +123,15 @@ hr{
 /*头像的样式*/
 .avatar-img{
     border: #ccc solid 2px;
+}
+#my-avatar:hover{
+
+    transition: all .3s ease;
+    transform: translateY(5px) scale(1.1, 1.1);
+}
+#my-avatar{
+    cursor: pointer;
+    margin-top: 5px !important;
 }
 .navbar-right img{
     width: 44px;
@@ -174,8 +185,8 @@ hr{
 }
 .main-container .panel:hover{
     transition: all .3s ease;
-    transform: scale(1.01, 1.01);
-    box-shadow: 8px 8px 3px #888888;
+    transform: scale(1.005, 1.005);
+    box-shadow: 1px 1px 1px #888888;
 }
 .comment-a:hover{
     color:#E20000 !important;
@@ -251,7 +262,7 @@ label,.modal-title{
     /*margin-bottom: 700px;*/
 }
 
-
+/*未登录页面样式*/
 .jumbotron{
     background-color: #ffe411;
     /*background-color: #9cc6f3;*/

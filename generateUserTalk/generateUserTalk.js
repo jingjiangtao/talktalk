@@ -16,6 +16,9 @@ function generateUserTalk(usersPath,talksPath,userNum){
 		users.push({
 			'username':username,
 			'password':password,
+            "sumZan" : 0,
+            "sumTalk" : 1,
+            "signature" : "",
 			'avatar':'default.jpg'
 		});
 		talks.push({
@@ -26,14 +29,35 @@ function generateUserTalk(usersPath,talksPath,userNum){
 			'zanNum':0,
 			'zanPerson':[],
 			'commentNum':0,
-			'commentContent':[]
+			'commentContent':[],
+            "talkImages" : ""
 		});
 	}
 
 	
 	for(var i=0;i<users.length;i++){
-		fs.appendFileSync(usersPath,'{"username":"'+users[i].username+'","password":"'+users[i].password+'","avatar":"default.jpg"}');
-		fs.appendFileSync(talksPath,'{"username":"'+talks[i].username+'","avatarPath":"default.jpg","talkContent":"'+talks[i].talkContent+'","time":{$date:"'+talks[i].time.toISOString()+'"},"zanNum":'+talks[i].zanNum+',"zanPerson":['+talks[i].zanPerson+'],"commentNum":'+talks[i].commentNum+',"commentContent":['+talks[i].commentContent+']}');
+		fs.appendFileSync(
+			usersPath,
+			'{' +
+                '"username":"'+users[i].username+'",' +
+                '"password":"'+users[i].password+'",' +
+                '"sumZan":'+users[i].sumZan+','+
+                '"sumTalk":'+users[i].sumTalk+','+
+                '"signature":"'+users[i].signature+'",'+
+                '"avatar":"default.jpg"' +
+            '}');
+		fs.appendFileSync(talksPath,
+            '{' +
+                '"username":"'+talks[i].username+'",' +
+                '"avatarPath":"default.jpg",' +
+                '"talkContent":"'+talks[i].talkContent+'",' +
+                '"time":{$date:"'+talks[i].time.toISOString()+'"},' +
+                '"zanNum":'+talks[i].zanNum+',' +
+                '"zanPerson":['+talks[i].zanPerson+'],' +
+                '"commentNum":'+talks[i].commentNum+',' +
+                '"commentContent":['+talks[i].commentContent+'],' +
+                '"talkImages":"'+talks[i].talkImages+'"' +
+            '}');
 	}
 }
 

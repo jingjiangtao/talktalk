@@ -15,9 +15,10 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="/css/index-page.css" rel="stylesheet">
     <link href="/css/cropper.min.css" rel="stylesheet">
     <link href="/css/sitelogo.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/element.css">
+    <link href="/css/index-page.css" rel="stylesheet">
 </head>
 
 <body>
@@ -41,14 +42,13 @@
                 <li v-bind:class="{active:myTalklist}"><a v-on:click="myTalk" href="javascript:;">我的说说</a></li>
                 <li v-bind:class="{active:memberlist}"><a v-on:click="members" href="javascript:;">成员列表</a></li>
             </ul>
-
             <div v-if="unlogin" class="navbar-form navbar-right">
                 <div id="login-form" class="login-form">
                     <div class="form-group">
-                        <input v-model="inputUsername" v-on:keyup.enter="loginMethod" type="text" placeholder="昵称(至少3位 可以中文)" class="form-control" id="username">
+                        <input v-model="inputUsername" v-on:keyup.enter="loginMethod" maxlength="10" type="text" placeholder="昵称(至少3位 可以中文)" class="form-control" id="username">
                     </div>
                     <div class="form-group">
-                        <input v-model="inputPassword" v-on:keyup.enter="loginMethod" type="password" placeholder="密码(至少6位)" class="form-control" id="password">
+                        <input v-model="inputPassword" v-on:keyup.enter="loginMethod" maxlength="15" type="password" placeholder="密码(至少6位)" class="form-control" id="password">
                     </div>
                     <button v-on:click="loginMethod" id="btn-login" class="btn btn-success">登录</button>
                     <button v-on:click="signinMethod" id="btn-signin" class="btn btn-success">注册</button>
@@ -57,9 +57,26 @@
 
             <ul v-else class="nav navbar-nav navbar-right">
                 <li>
-                    <a v-on:click="myTalk" href="javascript:;">
-                        <img v-bind:src="'/avatar/'+avatar" class="img-circle avatar-img">
-                    </a>
+                    <el-popover
+                            placement="left"
+                            width="300px"
+                            trigger="hover"
+                            transition="el-zoom-in-center">
+                        <div class="own-brif-info">
+                            <div>
+                                <span >昵称：</span>
+                                <span class="text-primary">{{username}}</span>
+                            </div>
+                            <div>
+                                <span >签名：</span>
+                                <span class="text-primary">{{signature}}</span>
+                            </div>
+                        </div>
+                        <a slot="reference" href="#" v-on:click="myTalk">
+                            <img v-bind:src="'/avatar/'+avatar" id="my-avatar" class="img-circle avatar-img">
+                        </a>
+                    </el-popover>
+
                 </li>
                 <li><a href="#" class="own-username">{{username}}</a></li>
                 <li><a href="#" data-toggle="modal" data-target="#modify-profile">修改个人资料</a></li>
@@ -68,7 +85,7 @@
 
         </div><!--/.navbar-collapse -->
     </div>
-</nav>
+    </nav>
 
 <div v-if="unlogin" class="container-fluid brief-fluid">
         <div class="jumbotron">
@@ -261,17 +278,20 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">NO.{{index+1}}</h4>
                 </div>
-                <div class="panel-body list-inline">
-                    <li class="userinfo-img">
-                        <img v-bind:src="'/avatar/'+ result.avatarPath" class="img-circle">
-                    </li>
-                    <li class="user-info-li">
-                        <ul class="user-info">
-                            <li class="username text-primary"><a href="javascript:;">   {{result.username}}   </a></li>
-                            <li class="brief-userinfo">总共发过<span class="text-primary">  {{result.sumTalk}}  </span>条动态</li>
-                            <li class="brief-userinfo">获得过<span class="text-primary">  {{result.sumZan}}  </span>次赞</li>
-                        </ul>
-                    </li>
+                <div class="panel-body">
+                    <ul class="list-inline">
+                        <li class="userinfo-img">
+                            <img v-bind:src="'/avatar/'+ result.avatar" class="img-circle">
+                        </li>
+                        <li class="user-info-li">
+                            <ul class="user-info">
+                                <li class="username text-primary"><a href="javascript:;">   {{result.username}}   </a></li>
+                                <li class="brief-userinfo">总共获得过<span class="text-primary">  {{result.sumZan}}  </span>次赞</li>
+                                <li class="brief-userinfo">目前有<span class="text-primary">  {{result.sumTalk}}  </span>条动态</li>
+                                <li class="brief-userinfo">签名：<span class="text-primary">{{result.signature}}</span></li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -298,12 +318,18 @@
             </div>
             <div class="modal-body">
                 <alert-box v-if="alertDis2" v-bind:text1="text1" v-bind:text2="text2"></alert-box>
+                <alert-box-success v-if="successDis" text1="成功" text2="签名修改成功"></alert-box-success>
                 <form>
                     <div class="form-group">
                         <img v-bind:src="'/avatar/'+avatar" class="img-circle center-block avatar-img">
                     </div>
                     <div class="form-group center-block">
                         <a href="#" id="modi-avatar" data-toggle="modal" data-target="#avatar-modal" class="center-block" >修改头像 &gt;</a>
+                    </div>
+                    <div class="form-group">
+                        <label for="signature" class="control-label">签名:</label>
+                        <input v-model="signature" type="text" class="form-control" id="signature" maxlength="50">
+                        <a href="javascript:;" v-on:click="modifySign" class="btn btn-default btn-sm pull-right">修改</a>
                     </div>
                     <div class="form-group">
                         <label for="old-pwd" class="control-label">旧密码:</label>
@@ -383,11 +409,12 @@
 <script src="/js/sitelogo.js"></script>
 <script src="/js/html2canvas.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="/js/vue.js"></script>
+<script src="/js/element.js"></script>
 
 <!--页面自身的js文件-->
 <script>
 
-
+    // 错误警告框
     Vue.component('alert-box', {
         props:['text1','text2'],
         template: `
@@ -397,6 +424,15 @@
                   `
     });
 
+    // 成功提示框
+    Vue.component('alert-box-success', {
+        props:['text1','text2'],
+        template: `
+                    <div class="alert alert-success" role="alert">
+                         <strong>{{text1}}</strong><span>{{text2}}</span>
+                    </div>
+                  `
+    });
 
     var indexShow = new Vue({
         el:'#show-index',
@@ -430,7 +466,11 @@
             text2:'',
             //文件选择
             files:null,
-            imagesShow:false
+            imagesShow:false,
+            //签名内容
+            signature:'',
+            // 签名修改提示框
+            successDis:false
         },
         created: function () {
             var _this = this;
@@ -439,6 +479,7 @@
                 _this.username = data.username;
                 _this.avatar = data.avatar;
                 _this.listResult = data.listResult;
+                _this.signature = data.signature;
                 for(var i=0;i<_this.listResult.length;i++){
                     if(_this.myTalkResult.indexOf(_this.listResult[i])==-1 &&
                         _this.listResult[i].username == _this.username){
@@ -643,34 +684,7 @@
                 var _this = this;
                 $.get('/allmembers', function(data, status) {
                     if (data.result == 1) {
-                        var userList = data.userlist;
-                        var talkList = data.talklist;
-                        var rst = [];
-                        for (var i = 0; i < userList.length; i++) {
-                            var sumZan = 0;
-                            var sumTalk = 0;
-                            var username = userList[i].username;
-                            var avatarPath = userList[i].avatar;
-                            for (var j = 0; j < talkList.length; j++) {
-                                if (talkList[j].username == username) {
-                                    sumZan += talkList[j].zanNum;
-                                    sumTalk++;
-                                }
-                            }
-                            rst.push({
-                                'username': username,
-                                'avatarPath': avatarPath,
-                                'sumZan': sumZan,
-                                'sumTalk': sumTalk
-                            });
-                        }
-                        rst.sort(function (a, b) {
-                            var s = a.sumZan;
-                            var t = b.sumZan;
-                            if (s < t) return 1;
-                            if (s > t) return -1;
-                        });
-                        _this.memberResult = rst;
+                        _this.memberResult = data.userList;
                     }
                 });
             },
@@ -693,7 +707,8 @@
                 var _this = this;
                 if(currList.zanPerson.indexOf(_this.username) != -1){
                     $.get('/docancelzan',{
-                        '_id':currList._id
+                        '_id':currList._id,
+                        'username':currList.username
                     }, function (data, status) {
                         if(data.result==1){
                             //取消赞高亮
@@ -704,7 +719,8 @@
                     });
                 }else{
                     $.get('/dozan', {
-                        '_id':currList._id
+                        '_id':currList._id,
+                        'username':currList.username
                     }, function(data, status){
                         if(data.result==1){
                             // 添加赞高亮
@@ -746,7 +762,6 @@
                 var oldPwd = document.getElementById('old-pwd').value;
                 var newPwd = document.getElementById('new-pwd').value;
                 var okNewPwd = document.getElementById('ok-new-pwd').value;
-                console.log(oldPwd,newPwd,okNewPwd);
                 var _this = this;
                 if(!oldPwd || !newPwd || !okNewPwd){
 
@@ -831,7 +846,17 @@
                     }
                 });
             },
-
+            // 修改签名
+            modifySign: function () {
+                var _this = this;
+                $.get('/modifysign',{
+                    'signature':_this.signature
+                },function (data, status) {
+                    if(data.result==1){
+                        _this.successDis = true;
+                    }
+                });
+            }
         }
     });
 
@@ -890,7 +915,6 @@
             }
         });
     }
-
 
 </script>
 </body>
