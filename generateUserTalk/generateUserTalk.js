@@ -41,8 +41,8 @@ function generateUserTalk(usersPath,talksPath,userNum){
 			'{' +
                 '"username":"'+users[i].username+'",' +
                 '"password":"'+users[i].password+'",' +
-                '"sumZan":"'+users[i].sumZan+'",'+
-                '"sumTalk":"'+users[i].sumTalk+'",'+
+                '"sumZan":'+users[i].sumZan+','+
+                '"sumTalk":'+users[i].sumTalk+','+
                 '"signature":"'+users[i].signature+'",'+
                 '"avatar":"default.jpg"' +
             '}');
