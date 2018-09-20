@@ -29,7 +29,9 @@ nav{
 .navbar-brand,.navbar-brand:hover{
     color: #000000 !important;
 }
-
+.own-username{
+    color: #000 !important;
+}
 hr{
     height:2px;
     size: 2px;
@@ -82,21 +84,21 @@ hr{
     border: 2px solid #ccc;
 }
 .member-list .user-info{
-    list-style: none;
-    margin-bottom: 0px;
+    list-style-type: circle;
 }
 .member-list .user-info-li{
-
+    vertical-align: middle;
 }
 .member-list .userinfo-img{
     padding-right:20px;
     border-right:2px #ccc solid;
 }
 .member-list .username{
+    list-style: none;
     font-size:20px;
 }
 .member-list .brief-userinfo{
-    border-top: 5px solid #FFFFFF;
+    border-top: 5px solid #FFF;
 }
 .member-list .panel-body{
     padding-bottom:2px;
@@ -108,8 +110,8 @@ hr{
 }
 .member-list .panel:hover{
     transition: all .3s ease;
-    transform: scale(1.05, 1.05);
-    box-shadow: 3px 3px 3px #888888;
+    transform: scale(1.01, 1.01);
+    box-shadow: 1px 1px 1px #888888;
 }
 
 /*警告框的样式*/
@@ -125,11 +127,11 @@ hr{
 #my-avatar:hover{
 
     transition: all .3s ease;
-    transform: translateY(15px) scale(1.5, 1.5);
+    transform: translateY(5px) scale(1.1, 1.1);
 }
 #my-avatar{
     cursor: pointer;
-    margin-top: 2px !important;
+    margin-top: 5px !important;
 }
 .navbar-right img{
     width: 44px;

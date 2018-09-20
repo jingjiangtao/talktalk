@@ -46,10 +46,10 @@
             <div v-if="unlogin" class="navbar-form navbar-right">
                 <div id="login-form" class="login-form">
                     <div class="form-group">
-                        <input v-model="inputUsername" v-on:keyup.enter="loginMethod" type="text" placeholder="昵称(至少3位 可以中文)" class="form-control" id="username">
+                        <input v-model="inputUsername" v-on:keyup.enter="loginMethod" maxlength="10" type="text" placeholder="昵称(至少3位 可以中文)" class="form-control" id="username">
                     </div>
                     <div class="form-group">
-                        <input v-model="inputPassword" v-on:keyup.enter="loginMethod" type="password" placeholder="密码(至少6位)" class="form-control" id="password">
+                        <input v-model="inputPassword" v-on:keyup.enter="loginMethod" maxlength="15" type="password" placeholder="密码(至少6位)" class="form-control" id="password">
                     </div>
                     <button v-on:click="loginMethod" id="btn-login" class="btn btn-success">登录</button>
                     <button v-on:click="signinMethod" id="btn-signin" class="btn btn-success">注册</button>
@@ -61,7 +61,8 @@
                     <el-popover
                             placement="left"
                             width="300px"
-                            trigger="hover">
+                            trigger="hover"
+                            transition="el-zoom-in-center">
                         <div class="own-brif-info">
                             <div>
                                 <span >昵称：</span>
@@ -278,18 +279,20 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">NO.{{index+1}}</h4>
                 </div>
-                <div class="panel-body list-inline">
-                    <li class="userinfo-img">
-                        <img v-bind:src="'/avatar/'+ result.avatar" class="img-circle">
-                    </li>
-                    <li class="user-info-li">
-                        <ul class="user-info">
-                            <li class="username text-primary"><a href="javascript:;">   {{result.username}}   </a></li>
-                            <li class="brief-userinfo">总共获得过<span class="text-primary">  {{result.sumZan}}  </span>次赞</li>
-                            <li class="brief-userinfo">目前有<span class="text-primary">  {{result.sumTalk}}  </span>条动态</li>
-                            <li class="brief-userinfo">签名：<span class="text-primary">{{result.signature}}</span></li>
-                        </ul>
-                    </li>
+                <div class="panel-body">
+                    <ul class="list-inline">
+                        <li class="userinfo-img">
+                            <img v-bind:src="'/avatar/'+ result.avatar" class="img-circle">
+                        </li>
+                        <li class="user-info-li">
+                            <ul class="user-info">
+                                <li class="username text-primary"><a href="javascript:;">   {{result.username}}   </a></li>
+                                <li class="brief-userinfo">总共获得过<span class="text-primary">  {{result.sumZan}}  </span>次赞</li>
+                                <li class="brief-userinfo">目前有<span class="text-primary">  {{result.sumTalk}}  </span>条动态</li>
+                                <li class="brief-userinfo">签名：<span class="text-primary">{{result.signature}}</span></li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
