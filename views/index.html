@@ -18,114 +18,161 @@
     <link href="/css/cropper.min.css" rel="stylesheet">
     <link href="/css/sitelogo.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/element.css">
-    <link href="/css/index-page.css" rel="stylesheet">
+    <!--<link href="/css/index-page.css" rel="stylesheet">-->
+    <style>
+        body{
+            font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+        }
+        .el-header{
+            background-color: #409EFF;
+            color: #FFF;
+            text-align: center;
+            line-height: 60px;
+        }
+
+        .el-main {
+            background-color: #FFF;
+            color: #333;
+        }
+
+        .header{
+            font-size: 28px;
+        }
+        .login-form{
+            vertical-align: middle;
+            padding: 50px;
+            text-align: center;
+        }
+        .el-form-item{
+            margin:50px 0px;
+        }
+        .el-carousel__container{
+            height: 400px;
+        }
+        .el-carousel__item h3 {
+            color: #475669;
+            font-size: 14px;
+            opacity: 0.75;
+            line-height: 100px;
+            margin: 0;
+            text-align: center;
+        }
+        .el-carousel__item:nth-child(2n) {
+            background-color: #99a9bf;
+        }
+
+        .el-carousel__item:nth-child(2n+1) {
+            background-color: #d3dce6;
+        }
+    </style>
 </head>
 
 <body>
 <div id="show-index">
-<!--网页的导航栏-->
-    <nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">小小说说</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav nav-list">
-                <li v-bind:class="{active:mainContainer}"><a v-on:click="allTalk" href="javascript:;">全部说说</a></li>
-                <li v-bind:class="{active:myTalklist}"><a v-on:click="myTalk" href="javascript:;">我的说说</a></li>
-                <li v-bind:class="{active:memberlist}"><a v-on:click="members" href="javascript:;">成员列表</a></li>
-            </ul>
-            <div v-if="unlogin" class="navbar-form navbar-right">
-                <div id="login-form" class="login-form">
-                    <div class="form-group">
-                        <input v-model="inputUsername" v-on:keyup.enter="loginMethod" maxlength="10" type="text" placeholder="昵称(至少3位 可以中文)" class="form-control" id="username">
-                    </div>
-                    <div class="form-group">
-                        <input v-model="inputPassword" v-on:keyup.enter="loginMethod" maxlength="15" type="password" placeholder="密码(至少6位)" class="form-control" id="password">
-                    </div>
-                    <button v-on:click="loginMethod" id="btn-login" class="btn btn-success">登录</button>
-                    <button v-on:click="signinMethod" id="btn-signin" class="btn btn-success">注册</button>
-                </div>
-            </div>
 
-            <ul v-else class="nav navbar-nav navbar-right">
-                <li>
-                    <el-popover
-                            placement="left"
-                            width="300px"
-                            trigger="hover"
-                            transition="el-zoom-in-center">
-                        <div class="own-brif-info">
-                            <div>
-                                <span >昵称：</span>
-                                <span class="text-primary">{{username}}</span>
-                            </div>
-                            <div>
-                                <span >签名：</span>
-                                <span class="text-primary">{{signature}}</span>
-                            </div>
-                        </div>
-                        <a slot="reference" href="#" v-on:click="myTalk">
-                            <img v-bind:src="'/avatar/'+avatar" id="my-avatar" class="img-circle avatar-img">
-                        </a>
-                    </el-popover>
-
-                </li>
-                <li><a href="#" class="own-username">{{username}}</a></li>
-                <li><a href="#" data-toggle="modal" data-target="#modify-profile">修改个人资料</a></li>
-                <li><a href="#" v-on:click="quitMethod" id="btn-quit">退出登录</a></li>
-            </ul>
-
-        </div><!--/.navbar-collapse -->
-    </div>
-    </nav>
-
-<div v-if="unlogin" class="container-fluid brief-fluid">
-        <div class="jumbotron">
-            <div class="container">
-                <transition name="slide">
-                <alert-box v-if="alertDis" v-bind:text1="text1" v-bind:text2="text2"></alert-box>
-                </transition>
-                <h1>欢迎使用小小说说</h1>
-                <p>要查看或发布动态，请先登录</p>
-
-            </div>
-        </div>
-
-        <div class="container">
-            <!-- Example row of columns -->
-            <div class="row brief">
-                <div class="col-md-4">
-                    <h2>发布动态</h2>
-                    <p>你可以随时把开心的，伤心的，好玩的，有意思的事跟大家分享，只要你愿意。</p>
-                </div>
-                <div class="col-md-4">
-                    <h2>查看动态</h2>
-                    <p>你可以看看别人都碰到了哪些好玩的事，遇到了哪些有趣的人。你也可以点赞，评论。</p>
-
-                </div>
-                <div class="col-md-4">
-                    <h2>查看成员</h2>
-                    <p>在这里，你可以知道使用小小说说的都是哪些人，他们都有哪些好玩的点子。</p>
-                </div>
-            </div>
-        </div> <!-- /container -->
-        <div class="footer">
-            <footer>
-                <p>&copy; 2018 Company, Inc.</p>
-            </footer>
-        </div>
-    </div>
+<div v-if="unlogin">
+    <el-container>
+        <el-header class="header">
+            欢迎来到小小说说
+        </el-header>
+        <el-main>
+            <el-row type="flex" justify="center">
+                <el-col :span="20">
+                    <el-carousel indicator-position="outside">
+                        <el-carousel-item>
+                            <h3>第一页</h3>
+                        </el-carousel-item>
+                        <el-carousel-item>
+                            <h3>第二页</h3>
+                        </el-carousel-item>
+                        <el-carousel-item>
+                            <h3>第三页</h3>
+                        </el-carousel-item>
+                    </el-carousel>
+                </el-col>
+            </el-row>
+            <el-row type="flex" justify="center">
+                <el-col :span="8">
+                    <el-form ref="form"  label-width="80px" class="login-form">
+                        <el-form-item label="用户名：">
+                            <el-input placeholder="用户名或昵称"></el-input>
+                        </el-form-item>
+                        <el-form-item label="密码：">
+                            <el-input type="password" placeholder="密码(至少6位)"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary">登录</el-button>
+                            <el-button>注册</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+            </el-row>
+        </el-main>
+    </el-container>
 
 <div v-else>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">小小说说</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav nav-list">
+                    <li v-bind:class="{active:mainContainer}"><a v-on:click="allTalk" href="javascript:;">全部说说</a></li>
+                    <li v-bind:class="{active:myTalklist}"><a v-on:click="myTalk" href="javascript:;">我的说说</a></li>
+                    <li v-bind:class="{active:memberlist}"><a v-on:click="members" href="javascript:;">成员列表</a></li>
+                </ul>
+                <div v-if="unlogin" class="navbar-form navbar-right">
+                    <div id="login-form" class="login-form">
+                        <div class="form-group">
+                            <input v-model="inputUsername" v-on:keyup.enter="loginMethod" maxlength="10" type="text" placeholder="昵称(至少3位 可以中文)" class="form-control" id="username">
+                        </div>
+                        <div class="form-group">
+                            <input v-model="inputPassword" v-on:keyup.enter="loginMethod" maxlength="15" type="password" placeholder="密码(至少6位)" class="form-control" id="password">
+                        </div>
+                        <button v-on:click="loginMethod" id="btn-login" class="btn btn-success">登录</button>
+                        <button v-on:click="signinMethod" id="btn-signin" class="btn btn-success">注册</button>
+                    </div>
+                </div>
 
+                <ul v-else class="nav navbar-nav navbar-right">
+                    <li>
+                        <el-popover
+                                placement="left"
+                                width="300px"
+                                trigger="hover"
+                                transition="el-zoom-in-center">
+                            <div class="own-brif-info">
+                                <div>
+                                    <span >昵称：</span>
+                                    <span class="text-primary">{{username}}</span>
+                                </div>
+                                <div>
+                                    <span >签名：</span>
+                                    <span class="text-primary">{{signature}}</span>
+                                </div>
+                            </div>
+                            <a slot="reference" href="#" v-on:click="myTalk">
+                                <img v-bind:src="'/avatar/'+avatar" id="my-avatar" class="img-circle avatar-img">
+                            </a>
+                        </el-popover>
+
+                    </li>
+                    <li><a href="#" class="own-username">{{username}}</a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#modify-profile">修改个人资料</a></li>
+                    <li><a href="#" v-on:click="quitMethod" id="btn-quit">退出登录</a></li>
+                </ul>
+
+            </div><!--/.navbar-collapse -->
+        </div>
+    </nav>
     <!--全部说说列表-->
     <transition name="slide" appear>
     <div v-if="mainContainer" class="container main-container">
@@ -352,6 +399,9 @@
     </div>
 </div>
 </div>
+
+
+
 <!--修改头像模态框-->
 <div class="modal fade" id="avatar-modal" aria-hidden="true" aria-labelledby="avatar-modal-label" role="dialog"
      tabindex="-1">
