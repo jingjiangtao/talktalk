@@ -23,20 +23,16 @@
         body{
             font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
         }
-        .el-header{
-            background-color: #409EFF;
-            color: #FFF;
-            text-align: center;
-            line-height: 60px;
-        }
 
         .el-main {
             background-color: #FFF;
             color: #333;
         }
-
         .header{
+            background-color: #409EFF;
+            color: #FFF;
             font-size: 28px;
+            vertical-align: middle;
         }
         .login-form{
             vertical-align: middle;
@@ -46,47 +42,55 @@
         .el-form-item{
             margin:20px 0px;
         }
+        .el-carousel{
+            border:1px solid #CCC
+        }
         .el-carousel__container{
             height: 300px;
         }
-        .el-carousel__item h3 {
-            color: #475669;
-            font-size: 14px;
-            opacity: 0.75;
+        .el-carousel__item{
+            color: #404040;
+            padding-top: 60px;
+            padding-left: 60px;
+        }
+        .el-carousel__item h1 {
             line-height: 100px;
-            margin: 0;
-            text-align: center;
+            margin: 10px;
+            font-family: Yuanti SC;
+            font-size: 50px;
         }
-        .el-carousel__item:nth-child(2n) {
-            background-color: #99a9bf;
-        }
-
-        .el-carousel__item:nth-child(2n+1) {
-            background-color: #d3dce6;
+        .el-carousel__item p{
+            margin:10px;
+            font-size: 23px;
         }
     </style>
 </head>
 
 <body>
 <div id="show-index">
-
+   
 <div v-if="unlogin">
     <el-container>
-        <el-header class="header">
-            欢迎来到小小说说
-        </el-header>
+        <el-header class="header"></el-header>
         <el-main>
             <el-row type="flex" justify="center">
                 <el-col :span="20">
                     <el-carousel indicator-position="outside">
                         <el-carousel-item>
-                            <h3>第一页</h3>
+                            <h1>欢迎使用小小说说</h1>
+                            <p>要查看或发布动态，请先登录</p>
                         </el-carousel-item>
                         <el-carousel-item>
-                            <h3>第二页</h3>
+                            <h1>发布动态</h1>
+                            <p>你可以随时把开心的，伤心的，好玩的，有意思的事跟大家分享，只要你愿意。</p>
                         </el-carousel-item>
                         <el-carousel-item>
-                            <h3>第三页</h3>
+                            <h1>查看动态</h1>
+                            <p>你可以看看别人都碰到了哪些好玩的事，遇到了哪些有趣的人。你也可以点赞，评论。</p>
+                        </el-carousel-item>
+                        <el-carousel-item>
+                            <h1>查看成员</h1>
+                            <p>在这里，你可以知道使用小小说说的都是哪些人，他们都有哪些好玩的点子。</p>
                         </el-carousel-item>
                     </el-carousel>
                 </el-col>
@@ -95,310 +99,62 @@
                 <el-col :span="8">
                     <el-form ref="form"  label-width="80px" class="login-form">
                         <el-form-item label="用户名：">
-                            <el-input placeholder="用户名或昵称"></el-input>
+                            <el-input v-model="inputUsername" v-on:keyup.enter="loginMethod"
+                                      maxlength="10" type="text" placeholder="昵称(至少3位 可以中文)"
+                                      id="username"></el-input>
                         </el-form-item>
                         <el-form-item label="密码：">
-                            <el-input type="password" placeholder="密码(至少6位)"></el-input>
+                            <el-input v-model="inputPassword" v-on:keyup.enter="loginMethod"
+                                      maxlength="15" type="password" placeholder="密码(至少6位)"
+                                      id="password"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary">登录</el-button>
-                            <el-button>注册</el-button>
+                            <el-button type="primary"  v-on:click="loginMethod" id="btn-login">登录</el-button>
+                            <el-button v-on:click="signinMethod" id="btn-signin">注册</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
             </el-row>
         </el-main>
     </el-container>
-
+</div>
 <div v-else>
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                        aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/">小小说说</a>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav nav-list">
-                    <li v-bind:class="{active:mainContainer}"><a v-on:click="allTalk" href="javascript:;">全部说说</a></li>
-                    <li v-bind:class="{active:myTalklist}"><a v-on:click="myTalk" href="javascript:;">我的说说</a></li>
-                    <li v-bind:class="{active:memberlist}"><a v-on:click="members" href="javascript:;">成员列表</a></li>
-                </ul>
-                <div v-if="unlogin" class="navbar-form navbar-right">
-                    <div id="login-form" class="login-form">
-                        <div class="form-group">
-                            <input v-model="inputUsername" v-on:keyup.enter="loginMethod" maxlength="10" type="text" placeholder="昵称(至少3位 可以中文)" class="form-control" id="username">
-                        </div>
-                        <div class="form-group">
-                            <input v-model="inputPassword" v-on:keyup.enter="loginMethod" maxlength="15" type="password" placeholder="密码(至少6位)" class="form-control" id="password">
-                        </div>
-                        <button v-on:click="loginMethod" id="btn-login" class="btn btn-success">登录</button>
-                        <button v-on:click="signinMethod" id="btn-signin" class="btn btn-success">注册</button>
-                    </div>
-                </div>
 
-                <ul v-else class="nav navbar-nav navbar-right">
-                    <li>
-                        <el-popover
-                                placement="left"
-                                width="300px"
-                                trigger="hover"
-                                transition="el-zoom-in-center">
-                            <div class="own-brif-info">
-                                <div>
-                                    <span >昵称：</span>
-                                    <span class="text-primary">{{username}}</span>
-                                </div>
-                                <div>
-                                    <span >签名：</span>
-                                    <span class="text-primary">{{signature}}</span>
-                                </div>
-                            </div>
-                            <a slot="reference" href="#" v-on:click="myTalk">
-                                <img v-bind:src="'/avatar/'+avatar" id="my-avatar" class="img-circle avatar-img">
-                            </a>
-                        </el-popover>
-
-                    </li>
-                    <li><a href="#" class="own-username">{{username}}</a></li>
-                    <li><a href="#" data-toggle="modal" data-target="#modify-profile">修改个人资料</a></li>
-                    <li><a href="#" v-on:click="quitMethod" id="btn-quit">退出登录</a></li>
-                </ul>
-
-            </div><!--/.navbar-collapse -->
-        </div>
-    </nav>
     <!--全部说说列表-->
-    <transition name="slide" appear>
-    <div v-if="mainContainer" class="container main-container">
-        <div class="jumbotron text-content-bg">
-        <div class="container">
-            <div class="row">
-                <textarea v-model.trim="inputStatusContent" v-on:keyup="changeLastNum" id="text-content" maxlength="300" class="form-control col-lg-12" rows="7"
-                              placeholder="有什么想和大家分享的？"></textarea>
-                <div class="col-lg-1">
-                    <label id="select-picture" for="file-upload" class="glyphicon glyphicon-picture"></label>
-                    <input v-on:change="uploadImg($event)" id="file-upload" name="imageUpload" type="file" accept="image/*" multiple=true>
-                </div>
+    <div v-if="mainContainer">
+        <el-container>
+            <el-header class="header"></el-header>
+            <el-main>
 
-                <span id="last-num" class="col-lg-1 col-lg-offset-9">{{lastNum}}</span>
-                <button v-on:click="sendStatus" id="btn-send" type="button" class="btn btn-success col-lg-1">发布</button>
-                <transition name="slide-image">
-                    <div v-if="imagesShow" class="col-lg-12 talk-images">
-                        <img v-for="file in files" v-bind:src="file" class="thumbnail col-lg-2">
-                    </div>
-                </transition>
-            </div>
-
-        </div>
-
+            </el-main>
+        </el-container>
     </div>
-        <div class="container">
-            <div class="panel-list">
-                <div v-for="(result, index) in listResult" v-bind:class="isOwn(result)">
-                    <span class="_id">{{result._id}}</span>
-                    <div class="panel-heading">
-                        <img v-bind:src="'/avatar/'+result.avatarPath" class="img-circle avatar-img panel-avatar">
-                        <span class="panel-username">{{result.username}}</span>
-                    </div>
-                    <div class="panel-body">
-                        <textarea v-bind:value="result.talkContent" disabled="disabled" class="col-lg-12 talk-content" rows="5"></textarea>
-                        <div v-if="showImagesCon(result)" class="col-lg-12 talk-images">
-                            <img v-for="image in result.talkImages" v-bind:src="image" class="thumbnail col-lg-2">
-                        </div>
-                    </div>
-                    <div class="panel-footer">
-                        <span class="time">{{(new Date(result.time)).toLocaleString()}}</span>
-                        <span class="icon-two pull-right">
-                            <a href="javascript:;" class="zan-number" v-bind:class="isZan(result)" v-on:click="zan(result)">
-                                <i class="glyphicon glyphicon-thumbs-up"></i>
-                                <span>{{result.zanNum}}</span>
-                            </a>
-                            <!--评论面板小图标-->
-                            <a href="javascript:;" data-toggle="collapse" class="comment-a" v-bind:data-target="'#collapsePanel'+index"
-                               aria-expanded="false" aria-controls="collapsePanel">
-                                <i class="glyphicon glyphicon-comment"></i>
-                                <span class="comment-number">{{result.commentNum}}</span>
-                            </a>
-                        </span>
-                        <!--评论面板-->
-                        <div class="collapse comment-coll" v-bind:id="'collapsePanel'+index">
-                            <div class="comment-content">
-                                <div>
-                                    <textarea v-model.trim="replyTextarea" maxlength="110" class="form-control reply-textarea" rows="3" placeholder=""></textarea>
-                                    <button v-on:click="replayBtn(result)" type="button" class="btn btn-success pull-right">回复</button>
-                                </div>
-                                <!--评论列表-->
-                                <ul class="list-group comment-list">
-
-                                    <li v-for="comment in result.commentContent" class="list-group-item">
-                                        <a v-on:click="replyToUser(comment)" href="javascript:;">{{comment.replyUser}}：</a>
-                                        <span class="reply-content">{{comment.replyContent}}</span>
-                                        <div class="reply-time">{{(new Date(comment.replyTime)).toLocaleString()}}</div>
-                                    </li>
-
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> <!-- /container -->
-        <hr>
-        <div>
-            <footer>
-                <p>&copy; 2018 Company, Inc.</p>
-            </footer>
-        </div>
-    </div>
-    </transition>
 
     <!--我的说说列表-->
-    <transition name="slide">
-    <div v-if="myTalklist" class="container my-talklist">
-        <div class="panel-list">
-            <div v-for="(result, index) in myTalkResult" class="panel panel-primary">
-                <span class="_id">{{result._id}}</span>
-                <div class="panel-heading">
-                    <img v-bind:src="'/avatar/'+result.avatarPath" class="img-circle avatar-img panel-avatar">
-                    <span class="panel-username">{{result.username}}</span>
-                </div>
-                <div class="panel-body">
-                    <textarea v-bind:value="result.talkContent" disabled="disabled" class="col-lg-12 talk-content" rows="5"></textarea>
-                    <div v-if="showImagesCon(result)" class="col-lg-12 talk-images">
-                        <img v-for="image in result.talkImages" v-bind:src="image" class="thumbnail col-lg-2">
-                    </div>
-                </div>
-                <div class="panel-footer">
-                    <span class="time">{{(new Date(result.time)).toLocaleString()}}</span>
-                    <span class="icon-two pull-right">
-                        <a v-on:click="deleteMyTalk(result)" href="javascript:;" class="delete-talk">删除</a>
-                        <a href="javascript:;" class="zan-number">
-                            <i class="glyphicon glyphicon-thumbs-up"></i>
-                            <span>{{result.zanNum}}</span>
-                        </a>
-                        <!--评论面板小图标-->
-                        <a href="javascript:;" data-toggle="collapse" v-bind:data-target="'#collapsePanel'+index"
-                           aria-expanded="false" aria-controls="collapsePanel" class="comment-a">
-                            <i class="glyphicon glyphicon-comment"></i>
-                            <span class="comment-number">{{result.commentNum}}</span>
-                        </a>
-                    </span>
-                    <!--评论面板-->
-                    <div class="collapse comment-coll" v-bind:id="'collapsePanel'+index">
-                        <div class="comment-content">
+    <div v-if="myTalklist">
+        <el-container>
+            <el-header class="header"></el-header>
+            <el-main>
 
-                            <!--评论列表-->
-                            <ul class="list-group comment-list">
-
-                                <li v-for="comment in result.commentContent" class="list-group-item">
-                                    <a class="reply-user" href="javascript:;">{{comment.replyUser}}：</a>
-                                    <span class="reply-content">{{comment.replyContent}}</span>
-                                    <div class="reply-time">{{(new Date(comment.replyTime)).toLocaleString()}}</div>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <hr>
-        <div>
-            <footer>
-                <p>&copy; 2018 Company, Inc.</p>
-            </footer>
-        </div>
+            </el-main>
+        </el-container>
     </div>
-    </transition>
 
     <!--成员列表-->
-    <transition name="slide">
     <div v-if="memberlist" class="container member-list">
-        <div class="panel-list">
-            <div v-for="(result, index) in memberResult" class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">NO.{{index+1}}</h4>
-                </div>
-                <div class="panel-body">
-                    <ul class="list-inline">
-                        <li class="userinfo-img">
-                            <img v-bind:src="'/avatar/'+ result.avatar" class="img-circle">
-                        </li>
-                        <li class="user-info-li">
-                            <ul class="user-info">
-                                <li class="username text-primary"><a href="javascript:;">   {{result.username}}   </a></li>
-                                <li class="brief-userinfo">总共获得过<span class="text-primary">  {{result.sumZan}}  </span>次赞</li>
-                                <li class="brief-userinfo">目前有<span class="text-primary">  {{result.sumTalk}}  </span>条动态</li>
-                                <li class="brief-userinfo">签名：<span class="text-primary">{{result.signature}}</span></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <hr>
-        <div>
-            <footer>
-                <p>&copy; 2018 Company, Inc.</p>
-            </footer>
-        </div>
+        <el-container>
+            <el-header class="header"></el-header>
+            <el-main>
+
+            </el-main>
+        </el-container>
     </div>
-    </transition>
 </div>
 
 
 <!-- Modal -->
 <!--修改个人信息的模态框-->
-<div class="modal fade" id="modify-profile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="myModalLabel">修改个人信息</h4>
-            </div>
-            <div class="modal-body">
-                <alert-box v-if="alertDis2" v-bind:text1="text1" v-bind:text2="text2"></alert-box>
-                <alert-box-success v-if="successDis" text1="成功" text2="签名修改成功"></alert-box-success>
-                <form>
-                    <div class="form-group">
-                        <img v-bind:src="'/avatar/'+avatar" class="img-circle center-block avatar-img">
-                    </div>
-                    <div class="form-group center-block">
-                        <a href="#" id="modi-avatar" data-toggle="modal" data-target="#avatar-modal" class="center-block" >修改头像 &gt;</a>
-                    </div>
-                    <div class="form-group">
-                        <label for="signature" class="control-label">签名:</label>
-                        <input v-model="signature" type="text" class="form-control" id="signature" maxlength="50">
-                        <a href="javascript:;" v-on:click="modifySign" class="btn btn-default btn-sm pull-right">修改</a>
-                    </div>
-                    <div class="form-group">
-                        <label for="old-pwd" class="control-label">旧密码:</label>
-                        <input type="password" class="form-control" id="old-pwd">
-                    </div>
-                    <div class="form-group">
-                        <label for="new-pwd" class="control-label">新密码:</label>
-                        <input type="password" class="form-control" id="new-pwd">
-                    </div>
-                    <div class="form-group">
-                        <label for="ok-new-pwd" class="control-label">确认新密码:</label>
-                        <input type="password" class="form-control" id="ok-new-pwd">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button v-on:click="updatePwd" type="button" class="btn btn-primary">确定</button>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
+
 </div>
 
 
