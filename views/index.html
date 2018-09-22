@@ -24,16 +24,21 @@
             font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
         }
 
+        /*main的样式*/
         .el-main {
             background-color: #FFF;
             color: #333;
         }
+
+        /*未登录页面页眉*/
         .header{
             background-color: #409EFF;
             color: #FFF;
             font-size: 28px;
             vertical-align: middle;
         }
+
+        /*登录表单*/
         .login-form{
             vertical-align: middle;
             padding: 50px;
@@ -42,6 +47,8 @@
         .el-form-item{
             margin:20px 0px;
         }
+
+        /*轮播图*/
         .el-carousel{
             border:1px solid #CCC
         }
@@ -62,6 +69,32 @@
         .el-carousel__item p{
             margin:10px;
             font-size: 23px;
+        }
+
+        /*导航栏*/
+        .el-menu-item a{
+            text-decoration: none;
+        }
+        .push-right{
+            float:right !important;
+        }
+
+        /*动态发布文本域*/
+        textarea{
+            resize: none !important;
+        }
+        /*发送动态按钮*/
+        .send-btn{
+            margin-top: 8px;
+        }
+        /*剩余字数显示*/
+        .last-num{
+            margin-top: 10px;
+        }
+
+        /*测试边界*/
+        .border-test{
+            border: 1px red solid;
         }
     </style>
 </head>
@@ -123,9 +156,37 @@
     <!--全部说说列表-->
     <div v-if="mainContainer">
         <el-container>
-            <el-header class="header"></el-header>
+            <el-header>
+                <el-row>
+                    <el-col :span="18" :offset="3">
+                        <el-menu mode="horizontal"
+                                 :default-active="'1'">
+                            <el-menu-item index="1"><a href="#">所有说说</a></el-menu-item>
+                            <el-menu-item index="2"><a href="#">我的说说</a></el-menu-item>
+                            <el-menu-item index="3"><a href="#">成员列表</a></el-menu-item>
+                            <el-menu-item index="7" class="push-right"><a href="#">退出登录</a></el-menu-item>
+                            <el-menu-item index="6" class="push-right"><a href="#">修改个人信息</a></el-menu-item>
+                            <el-menu-item index="5" class="push-right"><a href="#">用户名</a></el-menu-item>
+                            <el-menu-item index="4" class="push-right"><a href="#">头像</a></el-menu-item>
+                        </el-menu>
+                    </el-col>
+                </el-row>
+            </el-header>
             <el-main>
-
+                <el-row>
+                    <el-col :span="16" :offset="4">
+                        <el-input
+                                type="textarea"
+                                :rows="7"
+                                placeholder="有什么想和大家分享的？"
+                                v-model="inputStatusContent">
+                        </el-input>
+                    </el-col>
+                    <el-col :span="2" :offset="18">
+                        <span class="last-num">{{lastNum}}</span>
+                        <el-button type="success" class="push-right send-btn">发送</el-button>
+                    </el-col>
+                </el-row>
             </el-main>
         </el-container>
     </div>
@@ -295,6 +356,7 @@
                 }
             });
         },
+
         methods: {
 
             //判断当前的动态点赞图标是否应该高亮
@@ -722,7 +784,6 @@
             }
         });
     }
-
 </script>
 </body>
 </html>
