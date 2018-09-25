@@ -106,32 +106,32 @@ exports.postImg = function(req, res, next){
         if(!files){
             return;
         }
-        var fileList = [];
-        if(files.imgs instanceof Array){
-            fileList = files.imgs;
-        }else{
-            fileList.push(files.imgs);
-        }
-        var imgList = [];
-        for(let i=0;i<fileList.length;i++){
-            var time = date.format(new Date(), 'YYYYMMDDHHmmss');
-            var ran = parseInt(Math.random() * 89999 + 10000);
-            var extname = '.png';
-            var prefix1 = "./public/images/"+ req.session.username + "/";
-            var prefix2 = "./public/images/"+ req.session.username + "/"+time.substring(0, 8)+"/";
-            var newName = prefix2 + time + ran + extname;
+        var image = files.file;
 
-            if(!fs.existsSync(prefix1)){
-                fs.mkdirSync(prefix1);
-            }
-            if(!fs.existsSync(prefix2)){
-                fs.mkdirSync(prefix2);
-            }
-            fs.renameSync(fileList[i].path, newName);
-            imgList.push(newName.substring(8));
+        var time = date.format(new Date(), 'YYYYMMDDHHmmss');
+        var ran = parseInt(Math.random() * 89999 + 10000);
+        var extname = '.png';
+        var prefix1 = "./public/images/"+ req.session.username + "/";
+        var prefix2 = "./public/images/"+ req.session.username + "/"+time.substring(0, 8)+"/";
+        var newName = prefix2 + time + ran + extname;
+
+        if(!fs.existsSync(prefix1)){
+            fs.mkdirSync(prefix1);
         }
-        res.json({'result':1, 'imgList':imgList});
+        if(!fs.existsSync(prefix2)){
+            fs.mkdirSync(prefix2);
+        }
+        fs.renameSync(image.path, newName);
+
+        res.json({'result':1, 'image':newName.substring(8)});
     });
+};
+
+// 删除图片
+exports.removeImage = function(req, res, next){
+    var image = './public' + req.query.image;
+    fs.unlinkSync(image);
+    res.json({'result':1});
 };
 
 // 点赞业务
