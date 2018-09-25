@@ -99,7 +99,7 @@
             margin-top: 13px;
         }
         .el-card__header{
-            padding:10px;
+            padding:10px 10px 2px;
         }
         .el-card__header span{
             font-size: 18px;
@@ -107,15 +107,15 @@
             color: #409EFF;
             vertical-align: top;
         }
+        .card-username{
+            line-height: 50px;
+        }
         .card-body{
             padding: 10px;
         }
         .card-body .el-textarea{
             font-size:19px !important;
         }
-        /*.card-body textarea{*/
-            /*resize:vertical !important;*/
-        /*}*/
         .card-body .talk-images{
             border: 2px #dcdfe6 solid;
             margin-top: 8px;
@@ -124,11 +124,21 @@
             width: 15%;
         }
         .card-footer{
-            border-top: #ebeef5 1px solid;
+            /*border-top: #ebeef5 1px solid;*/
             padding-top: 10px;
         }
         .card-footer .time{
             font-size: 14px;
+        }
+        .card-footer .zan{
+            font-size: 18px;
+            line-height: 48px;
+            margin-right: 3px;
+            color: #409EFF;
+        }
+        .card-footer .zanNum{
+            font-size: 14px;
+            margin-right: 15px;
         }
         /*测试边界*/
         .border-test{
@@ -258,7 +268,7 @@
                         <el-card class="talk-card">
                             <div slot="header">
                                 <img v-bind:src="'/avatar/'+result.avatarPath" class="avatar-img">
-                                <span>{{result.username}}</span>
+                                <span class="card-username">{{result.username}}</span>
                             </div>
                             <div class="card-body">
                                 <div>
@@ -275,7 +285,26 @@
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <span class="time">{{(new Date(result.time)).toLocaleString()}}</span>
+
+                                <el-collapse>
+                                    <el-collapse-item>
+                                        <template slot="title">
+                                            <span class="time">{{(new Date(result.time)).toLocaleString()}}</span>
+                                            <span class="zan zanNum push-right">{{result.commentNum}}</span>
+                                            <i class="el-icon-message push-right zan"></i>
+                                            <span class="zan zanNum push-right">{{result.zanNum}}</span>
+                                            <i v-if="isZan(result)"
+                                               v-on:click.stop="cancelZan(result)"
+                                               class="el-icon-star-on push-right zan">
+                                            </i>
+                                            <i v-if="!isZan(result)"
+                                               v-on:click.stop="zan(result)"
+                                               class="el-icon-star-off push-right zan">
+                                            </i>
+                                        </template>
+                                        <div>评论面板</div>
+                                    </el-collapse-item>
+                                </el-collapse>
                             </div>
                         </el-card>
 
@@ -374,31 +403,12 @@
             isZan: function (result) {
 
                 if(result.zanPerson.indexOf(this.username) != -1){
-                    return {
-                        'zaned':true
-                    };
+                    return true;
                 }else{
-                    return {
-                        'zaned':false
-                    };
+                    return false;
                 }
             },
-            //给自己的动态添加样式
-            isOwn:function(result){
-                if(result.username==this.username){
-                    return {
-                        'panel':true,
-                        'panel-default':false,
-                        'panel-primary':true
-                    }
-                }else{
-                    return {
-                        'panel':true,
-                        'panel-default':true,
-                        'panel-primary':false
-                    }
-                }
-            },
+
             //登录按钮点击
             loginMethod: function(){
                 var _this = this;
@@ -605,41 +615,45 @@
             // 点赞
             zan: function (currList) {
                 var _this = this;
-                if(currList.zanPerson.indexOf(_this.username) != -1){
-                    $.get('/docancelzan',{
-                        '_id':currList._id,
-                        'username':currList.username
-                    }, function (data, status) {
-                        if(data.result==1){
-                            //取消赞高亮
-                            currList.zanPerson.splice(currList.zanPerson.indexOf(_this.username),1);
+                $.get('/dozan', {
+                    '_id':currList._id,
+                    'username':currList.username
+                }, function(data, status){
+                    if(data.result==1){
+                        // 显示赞过图标
+                        currList.zanPerson.push(_this.username);
+                        currList.zanNum += 1;
+                        return;
+                    }else{
+                        _this.$message({
+                            message: '发生错误',
+                            type: 'error'
+                        });
+                    }
+                });
+
+            },
+            //取消点赞
+            cancelZan:function(currList){
+                var _this = this;
+                $.get('/docancelzan',{
+                    '_id':currList._id,
+                    'username':currList.username
+                }, function (data, status) {
+                    if(data.result==1){
+                        // 显示未赞过图标
+                        currList.zanPerson.splice(currList.zanPerson.indexOf(_this.username),1);
+                        if(currList.zanNum>0){
                             currList.zanNum -= 1;
-                            return;
-                        }else{
-                            _this.$message({
-                                message: '发生错误',
-                                type: 'error'
-                            });
                         }
-                    });
-                }else{
-                    $.get('/dozan', {
-                        '_id':currList._id,
-                        'username':currList.username
-                    }, function(data, status){
-                        if(data.result==1){
-                            // 添加赞高亮
-                            currList.zanPerson.push(_this.username);
-                            currList.zanNum += 1;
-                            return;
-                        }else{
-                            _this.$message({
-                                message: '发生错误',
-                                type: 'error'
-                            });
-                        }
-                    });
-                }
+                        return;
+                    }else{
+                        _this.$message({
+                            message: '发生错误',
+                            type: 'error'
+                        });
+                    }
+                });
             },
             //回复按钮
             replayBtn: function(currList){
