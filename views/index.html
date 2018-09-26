@@ -161,8 +161,33 @@
         #old-pwd,#new-pwd,#ok-new-pwd{
             margin: 15px 0 0;
         }
-        /*修改签名按钮的位置*/
-        .el-input-group__append{
+
+        /*修改头像模态框*/
+        .avatar-uploader{
+            text-align: center;
+        }
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 178px;
+            height: 178px;
+            line-height: 178px;
+            text-align: center;
+        }
+        .avatar {
+            width: 178px;
+            height: 178px;
+            display: block;
         }
         /*测试边界*/
         .border-test{
@@ -244,16 +269,17 @@
                         <el-menu-item index="6" class="push-right" v-on:click="dialogUpdatePwd=true">修改个人信息</el-menu-item>
                         <el-menu-item index="5" class="push-right my-name">{{username}}</el-menu-item>
                         <el-menu-item index="4" class="push-right">
-                            <el-popover
-                                    placement="bottom"
-                                    title="签名"
-                                    width="200"
-                                    trigger="hover"
-                                    transition="el-zoom-in-top"
-                                    :content="signature">
-                                <img :src="'/avatar/'+avatar" class="avatar-img" slot="reference">
+                            <el-popover placement="bottom"
+                                        title="签名"
+                                        width="200"
+                                        trigger="hover"
+                                        transition="el-zoom-in-top"
+                                        :content="signature">
+                                <img :src="'/avatar/'+avatar"
+                                     class="avatar-img"
+                                     slot="reference"
+                                     v-on:click="dialogModifyAvatar=true">
                             </el-popover>
-
                         </el-menu-item>
                     </el-menu>
                 </el-col>
@@ -367,6 +393,7 @@
         </el-container>
     </div>
 </div>
+    <!--修改个人信息模态框-->
     <el-dialog title="修改个人信息"
                :visible.sync="dialogUpdatePwd"
                width="30%">
@@ -397,6 +424,25 @@
         <div slot="footer">
             <el-button @click="dialogUpdatePwd = false">取 消</el-button>
             <el-button type="primary" v-on:click="updatePwd">确 定</el-button>
+        </div>
+    </el-dialog>
+
+    <!--修改头像模态框-->
+    <el-dialog title="修改头像(请自行裁剪)"
+               :visible.sync="dialogModifyAvatar"
+               width="20%"
+               center>
+        <el-upload
+                class="avatar-uploader"
+                action="/modiavatar"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload">
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+        <div slot="footer">
+            <el-button type="primary" v-on:click="modifyAvatarOk">确 定</el-button>
         </div>
     </el-dialog>
 </div>
@@ -435,6 +481,10 @@
             replyTextarea:'',
             //修改密码模态框打开状态
             dialogUpdatePwd:false,
+            //修改头像模态框打开状态
+            dialogModifyAvatar:false,
+            //头像图片url
+            imageUrl:'',
             //文件选择
             files:[],
             imagesShow:false,
@@ -869,6 +919,34 @@
                         });
                     }
                 });
+            },
+
+            //修改头像
+            handleAvatarSuccess(res, file) {
+                if(res.result==1){
+                    this.$message({
+                        message: '上传成功',
+                        type: 'success'
+                    });
+                    this.imageUrl = URL.createObjectURL(file.raw);
+                }else{
+                    this.$message({
+                        message: '上传失败',
+                        type: 'error'
+                    });
+                }
+            },
+            beforeAvatarUpload(file) {
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isLt2M;
+            },
+            modifyAvatarOk: function () {
+                this.dialogModifyAvatar = false;
+                window.location.href = '/';
             }
         }
     });

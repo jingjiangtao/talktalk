@@ -437,7 +437,7 @@ exports.quit = function(req, res, next){
 // 修改头像
 exports.modifyAvatar = function(req, res, next){
     var form = new formidable.IncomingForm();
-
+    form.uploadDir = "./avatar";
     form.parse(req, function(err, fields, files) {
         if (err) {
             console.log(err);
@@ -450,9 +450,11 @@ exports.modifyAvatar = function(req, res, next){
         }
         var path = path+ req.session.username +'.png';
         var avatarPath = req.session.username + '/' + req.session.username + '.png';
-        var base64 = fields.img.replace(/^data:image\/\w+;base64,/, "");//去掉图片base64码前面部分data:image/png;base64
-        var dataBuffer = new Buffer(base64, 'base64'); //把base64码转成buffer对象，
-        fs.writeFile(path,dataBuffer,function(err){//用fs写入文件
+        var file = files.file;
+        if(fs.existsSync(path)){
+            fs.unlinkSync(path);
+        }
+        fs.rename(file.path,path,function(err){
             if(err){
                 console.log(err);
                 res.json({'result':-1});
