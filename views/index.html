@@ -189,6 +189,34 @@
             height: 178px;
             display: block;
         }
+
+        /*成员列表页面*/
+        .member-card{
+            margin-top: 20px;
+        }
+        .memcard-body .avatar-img{
+            width: 168px;
+            height: 168px;
+            margin-right: 10px;
+            display: inline-block;
+        }
+        .memcard-body .member-info{
+            display: inline-block;
+            vertical-align: top;
+            line-height: 50px;
+            list-style: none;
+        }
+        .memcard-body .member-info li{
+            font-size: 16px;
+        }
+        .memcard-body .member-info li span{
+            margin: 0 3px;
+            color: #409EFF;
+        }
+        .memlist-signature{
+            font-size: 17px !important;
+            color: #303133 !important;
+        }
         /*测试边界*/
         .border-test{
             border: 1px red solid;
@@ -388,7 +416,23 @@
     <div v-if="memberlist" class="member-list">
         <el-container>
             <el-main>
-                成员列表
+                <el-row v-for="(result, index) in memberResult" :key="result._id">
+                    <el-col :span="16" :offset="4">
+                        <el-card class="member-card">
+                            <div slot="header">
+                                <span class="memlist-signature">{{result.signature}}</span>
+                            </div>
+                            <div class="memcard-body">
+                                <img v-bind:src="'/avatar/'+result.avatar" class="avatar-img">
+                                <ul class="member-info">
+                                    <li><span>{{result.username}}</span></li>
+                                    <li>共获得<span>{{result.sumZan}}</span>次赞</li>
+                                    <li>发过<span>{{result.sumTalk}}</span>条动态</li>
+                                </ul>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
             </el-main>
         </el-container>
     </div>
@@ -638,7 +682,7 @@
                         _this.inputStatusContent='';
                         _this.lastNum = 300;
                         _this.imagesShow = false;
-                        _this.files = null;
+                        _this.files = [];
                     }else{
                         _this.$message({
                             message: '发送失败',

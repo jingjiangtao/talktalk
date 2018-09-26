@@ -28,7 +28,6 @@ exports.insertOne = function(collectionName, json, callback){
 	        return;
         }
 		db.collection(collectionName).insertOne(json).then(function(result){
-			console.log('插入成功');
 			callback(err, result);
 		});
 	});
