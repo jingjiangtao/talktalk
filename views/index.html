@@ -10,6 +10,9 @@
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <style>
+        [v-cloak]{
+            display: none;
+        }
         body{
             font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
             margin:0px;
@@ -68,6 +71,13 @@
         .push-right{
             float:right !important;
         }
+        .nav-list{
+            position: fixed;
+            width: 100%;
+            left: 0;
+            top: 0;
+            z-index: 1500;
+        }
         /*头像样式*/
         .avatar-img{
             border: #DCDFE6 solid 2px;
@@ -75,6 +85,12 @@
             height: 44px;
             border-radius: 50%;
         }
+
+        /*主要区域样式*/
+        .main-talklist,.my-talklist,.member-list{
+            margin-top: 70px;
+        }
+
         /*动态发布文本域*/
         textarea{
             resize: none !important;
@@ -139,6 +155,14 @@
         .card-footer .zanNum{
             font-size: 14px;
             margin-right: 15px;
+        }
+
+        /*修改密码模态框*/
+        #old-pwd,#new-pwd,#ok-new-pwd{
+            margin: 15px 0 0;
+        }
+        /*修改签名按钮的位置*/
+        .el-input-group__append{
         }
         /*测试边界*/
         .border-test{
@@ -207,7 +231,7 @@
 </div>
 <div v-else>
     <!--导航栏-->
-    <el-container>
+    <el-container class="nav-list">
         <el-header>
             <el-row>
                 <el-col :span="18" :offset="3">
@@ -217,16 +241,27 @@
                         <el-menu-item index="2" v-on:click="myTalk">我的说说</el-menu-item>
                         <el-menu-item index="3" v-on:click="members">成员列表</el-menu-item>
                         <el-menu-item index="7" class="push-right" v-on:click="quitMethod">退出登录</el-menu-item>
-                        <el-menu-item index="6" class="push-right">修改个人信息</el-menu-item>
+                        <el-menu-item index="6" class="push-right" v-on:click="dialogUpdatePwd=true">修改个人信息</el-menu-item>
                         <el-menu-item index="5" class="push-right my-name">{{username}}</el-menu-item>
-                        <el-menu-item index="4" class="push-right"><img :src="'/avatar/'+avatar" class="avatar-img"></el-menu-item>
+                        <el-menu-item index="4" class="push-right">
+                            <el-popover
+                                    placement="bottom"
+                                    title="签名"
+                                    width="200"
+                                    trigger="hover"
+                                    transition="el-zoom-in-top"
+                                    :content="signature">
+                                <img :src="'/avatar/'+avatar" class="avatar-img" slot="reference">
+                            </el-popover>
+
+                        </el-menu-item>
                     </el-menu>
                 </el-col>
             </el-row>
         </el-header>
     </el-container>
     <!--全部说说列表-->
-    <div v-if="mainContainer">
+    <div v-if="mainContainer" class="main-talklist">
         <el-container>
             <el-main>
                 <el-row>
@@ -332,7 +367,38 @@
         </el-container>
     </div>
 </div>
-
+    <el-dialog title="修改个人信息"
+               :visible.sync="dialogUpdatePwd"
+               width="30%">
+        <el-form>
+            <el-input v-model.trim="signature"
+                      type="text"
+                      id="signature"
+                      maxlength="50"
+                      placeholder="输入签名">
+                <el-button slot="append" v-on:click="modifySign">修改</el-button>
+            </el-input>
+            <el-input maxlength="15"
+                      type="password"
+                      placeholder="输入旧密码"
+                      id="old-pwd">
+            </el-input>
+            <el-input maxlength="15"
+                      type="password"
+                      placeholder="输入新密码(至少6位)"
+                      id="new-pwd">
+            </el-input>
+            <el-input maxlength="15"
+                      type="password"
+                      placeholder="确认新密码"
+                      id="ok-new-pwd">
+            </el-input>
+        </el-form>
+        <div slot="footer">
+            <el-button @click="dialogUpdatePwd = false">取 消</el-button>
+            <el-button type="primary" v-on:click="updatePwd">确 定</el-button>
+        </div>
+    </el-dialog>
 </div>
 
 <!-- Placed at the end of the document so the pages load faster -->
@@ -367,19 +433,13 @@
             memberResult:[],
             //回复框中的值
             replyTextarea:'',
-            //是否显示警告框
-            alertDis:false,
-            alertDis2:false,
-            //警告框中的信息
-            text1:'',
-            text2:'',
+            //修改密码模态框打开状态
+            dialogUpdatePwd:false,
             //文件选择
             files:[],
             imagesShow:false,
             //签名内容
-            signature:'',
-            // 签名修改提示框
-            successDis:false
+            signature:''
         },
         created: function () {
             var _this = this;
@@ -722,10 +782,13 @@
                     newPwd:newPwd
                 }, function(data, status){
                     if(data.result==1){
-                        window.location.href = '/';
+                        _this.$message({
+                            message: '修改成功',
+                            type: 'success'
+                        });
+                        _this.dialogUpdatePwd = false;
                     }
                     else if(data.result==-1){
-
                         _this.$message({
                             message: '修改失败，未知错误',
                             type: 'error'
@@ -789,8 +852,16 @@
                 $.get('/modifysign',{
                     'signature':_this.signature
                 },function (data, status) {
-                    if(data.result==1){
-                        _this.successDis = true;
+                    if(data.result==1 && data.modifiedCount!=0){
+                        _this.$message({
+                            message: '修改成功',
+                            type: 'success'
+                        });
+                    }else if(data.result==1 && data.modifiedCount==0){
+                        _this.$message({
+                            message: '没有做出修改',
+                            type: 'warning'
+                        });
                     }else{
                         _this.$message({
                             message: '修改失败',

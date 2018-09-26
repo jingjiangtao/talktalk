@@ -505,6 +505,7 @@ exports.modifySign = function (req, res, next) {
             res.json({'result':-1});
             return;
         }
-        res.json({'result':1});
+
+        res.json({'result':1,'modifiedCount':result.modifiedCount});
     });
 };
