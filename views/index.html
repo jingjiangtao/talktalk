@@ -190,6 +190,15 @@
             display: block;
         }
 
+        /*我的说说页面*/
+        .my-talklist .delete-talk{
+            line-height: 50px;
+            vertical-align: middle;
+        }
+        .my-talklist .delete-talk:hover{
+            cursor: pointer;
+            color: #F56C6C;
+        }
         /*成员列表页面*/
         .member-card{
             margin-top: 20px;
@@ -411,7 +420,7 @@
                             <div slot="header">
                                 <img :src="'/avatar/'+result.avatarPath" class="avatar-img">
                                 <span class="card-username">{{result.username}}</span>
-                                <i class="el-icon-delete push-right" title="删除这条说说"></i>
+                                <i @click="deleteMyTalk(result)" class="el-icon-delete push-right delete-talk" title="删除这条说说"></i>
                             </div>
                             <div class="card-body">
                                 <div>
