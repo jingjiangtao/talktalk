@@ -258,7 +258,7 @@
                     <el-form ref="form" class="login-form">
                         <el-form-item>
                             <el-input v-model="inputUsername"
-                                      v-on:keyup.enter.native="loginMethod"
+                                      @keyup.enter.native="loginMethod"
                                       maxlength="10"
                                       type="text"
                                       placeholder="昵称(至少3位 可以中文)"
@@ -266,15 +266,15 @@
                         </el-form-item>
                         <el-form-item>
                             <el-input v-model="inputPassword"
-                                      v-on:keyup.enter.native="loginMethod"
+                                      @keyup.enter.native="loginMethod"
                                       maxlength="15"
                                       type="password"
                                       placeholder="密码(至少6位)"
                                       id="password"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary"  v-on:click="loginMethod" id="btn-login">登录</el-button>
-                            <el-button v-on:click="signinMethod" id="btn-signin">注册</el-button>
+                            <el-button type="primary"  @click="loginMethod" id="btn-login">登录</el-button>
+                            <el-button @click="signinMethod" id="btn-signin">注册</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
@@ -290,11 +290,11 @@
                 <el-col :span="18" :offset="3">
                     <el-menu mode="horizontal"
                              :default-active="'1'">
-                        <el-menu-item index="1" v-on:click="allTalk">所有说说</el-menu-item>
-                        <el-menu-item index="2" v-on:click="myTalk">我的说说</el-menu-item>
-                        <el-menu-item index="3" v-on:click="members">成员列表</el-menu-item>
-                        <el-menu-item index="7" class="push-right" v-on:click="quitMethod">退出登录</el-menu-item>
-                        <el-menu-item index="6" class="push-right" v-on:click="dialogUpdatePwd=true">修改个人信息</el-menu-item>
+                        <el-menu-item index="1" @click="allTalk">所有说说</el-menu-item>
+                        <el-menu-item index="2" @click="myTalk">我的说说</el-menu-item>
+                        <el-menu-item index="3" @click="members">成员列表</el-menu-item>
+                        <el-menu-item index="7" class="push-right" @click="quitMethod">退出登录</el-menu-item>
+                        <el-menu-item index="6" class="push-right" @click="dialogUpdatePwd=true">修改个人信息</el-menu-item>
                         <el-menu-item index="5" class="push-right my-name">{{username}}</el-menu-item>
                         <el-menu-item index="4" class="push-right">
                             <el-popover placement="bottom"
@@ -306,7 +306,7 @@
                                 <img :src="'/avatar/'+avatar"
                                      class="avatar-img"
                                      slot="reference"
-                                     v-on:click="dialogModifyAvatar=true">
+                                     @click="dialogModifyAvatar=true">
                             </el-popover>
                         </el-menu-item>
                     </el-menu>
@@ -325,18 +325,18 @@
                                 :rows="7"
                                 placeholder="有什么想和大家分享的？"
                                 v-model.trim="inputStatusContent"
-                                v-on:keyup.native="changeLastNum"
+                                @keyup.native="changeLastNum"
                                 maxlength="300">
                         </el-input>
                     </el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="2" :offset="4">
-                        <el-button icon="el-icon-picture" class="add-picture-btn" v-on:click="addPicture">添加图片</el-button>
+                        <el-button icon="el-icon-picture" class="add-picture-btn" @click="addPicture">添加图片</el-button>
                     </el-col>
                     <el-col :span="2" :offset="12">
                         <span class="last-num">{{lastNum}}</span>
-                        <el-button v-on:click="sendStatus" type="success" class="push-right send-btn">发送</el-button>
+                        <el-button @click="sendStatus" type="success" class="push-right send-btn">发送</el-button>
                     </el-col>
                 </el-row>
                 <el-row v-if="imagesShow">
@@ -356,7 +356,7 @@
                     <el-col :span="16" :offset="4">
                         <el-card class="talk-card">
                             <div slot="header">
-                                <img v-bind:src="'/avatar/'+result.avatarPath" class="avatar-img">
+                                <img :src="'/avatar/'+result.avatarPath" class="avatar-img">
                                 <span class="card-username">{{result.username}}</span>
                             </div>
                             <div class="card-body">
@@ -370,7 +370,7 @@
                                     </el-input>
                                 </div>
                                 <div v-if="showImagesCon(result)">
-                                    <img v-for="image in result.talkImages" v-bind:src="image" class="talk-images">
+                                    <img v-for="image in result.talkImages" :src="image" class="talk-images">
                                 </div>
                             </div>
                             <div class="card-footer">
@@ -382,11 +382,11 @@
                                             <i class="el-icon-message push-right zan"></i>
                                             <span class="zan zanNum push-right">{{result.zanNum}}</span>
                                             <i v-if="isZan(result)"
-                                               v-on:click.stop="cancelZan(result)"
+                                               @click.stop="cancelZan(result)"
                                                class="el-icon-star-on push-right zan">
                                             </i>
                                             <i v-if="!isZan(result)"
-                                               v-on:click.stop="zan(result)"
+                                               @click.stop="zan(result)"
                                                class="el-icon-star-off push-right zan">
                                             </i>
                                         </template>
@@ -411,6 +411,7 @@
                             <div slot="header">
                                 <img :src="'/avatar/'+result.avatarPath" class="avatar-img">
                                 <span class="card-username">{{result.username}}</span>
+                                <i class="el-icon-delete push-right" title="删除这条说说"></i>
                             </div>
                             <div class="card-body">
                                 <div>
@@ -461,7 +462,7 @@
                                 <span class="memlist-signature">{{result.signature}}</span>
                             </div>
                             <div class="memcard-body">
-                                <img v-bind:src="'/avatar/'+result.avatar" class="avatar-img">
+                                <img :src="'/avatar/'+result.avatar" class="avatar-img">
                                 <ul class="member-info">
                                     <li><span>{{result.username}}</span></li>
                                     <li>共获得<span>{{result.sumZan}}</span>次赞</li>
@@ -485,7 +486,7 @@
                       id="signature"
                       maxlength="50"
                       placeholder="输入签名">
-                <el-button slot="append" v-on:click="modifySign">修改</el-button>
+                <el-button slot="append" @click="modifySign">修改</el-button>
             </el-input>
             <el-input maxlength="15"
                       type="password"
@@ -505,7 +506,7 @@
         </el-form>
         <div slot="footer">
             <el-button @click="dialogUpdatePwd = false">取 消</el-button>
-            <el-button type="primary" v-on:click="updatePwd">确 定</el-button>
+            <el-button type="primary" @click="updatePwd">确 定</el-button>
         </div>
     </el-dialog>
 
@@ -524,7 +525,7 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
         <div slot="footer">
-            <el-button type="primary" v-on:click="modifyAvatarOk">确 定</el-button>
+            <el-button type="primary" @click="modifyAvatarOk">确 定</el-button>
         </div>
     </el-dialog>
 </div>
