@@ -366,7 +366,7 @@
                                             :rows="8"
                                             autosize
                                             :value="result.talkContent"
-                                            readonly="readonly">
+                                            readonly>
                                     </el-input>
                                 </div>
                                 <div v-if="showImagesCon(result)">
@@ -374,7 +374,6 @@
                                 </div>
                             </div>
                             <div class="card-footer">
-
                                 <el-collapse>
                                     <el-collapse-item>
                                         <template slot="title">
@@ -396,7 +395,6 @@
                                 </el-collapse>
                             </div>
                         </el-card>
-
                     </el-col>
                 </el-row>
             </el-main>
@@ -407,7 +405,47 @@
     <div v-if="myTalklist" class="my-talklist">
         <el-container>
             <el-main>
-                我的说说
+                <el-row v-for="(result, index) in myTalkResult" :key="result._id">
+                    <el-col :span="16" :offset="4">
+                        <el-card class="talk-card">
+                            <div slot="header">
+                                <img :src="'/avatar/'+result.avatarPath" class="avatar-img">
+                                <span class="card-username">{{result.username}}</span>
+                            </div>
+                            <div class="card-body">
+                                <div>
+                                    <el-input type="textarea"
+                                              :rows="8" autosize
+                                              :value="result.talkContent"
+                                              readonly>
+                                    </el-input>
+                                </div>
+                                <div v-if="showImagesCon(result)">
+                                    <img v-for="image in result.talkImages" :src="image" class="talk-images">
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <el-collapse>
+                                    <el-collapse-item>
+                                        <template slot="title">
+                                            <span class="time">{{(new Date(result.time)).toLocaleString()}}</span>
+                                            <span class="zan zanNum push-right">{{result.commentNum}}</span>
+                                            <i class="el-icon-message push-right zan"></i>
+                                            <span class="zan zanNum push-right">{{result.zanNum}}</span>
+                                            <i v-if="isZan(result)"
+                                               class="el-icon-star-on push-right zan">
+                                            </i>
+                                            <i v-if="!isZan(result)"
+                                               class="el-icon-star-off push-right zan">
+                                            </i>
+                                        </template>
+                                        <div>评论面板</div>
+                                    </el-collapse-item>
+                                </el-collapse>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
             </el-main>
         </el-container>
     </div>
