@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <link rel="icon" href="/images/favicon.ico">
 
     <title>小小说说</title>
@@ -219,8 +218,9 @@
             font-size: 16px;
         }
         .memcard-body .member-info li span{
-            margin: 0 3px;
+            margin: 0 5px;
             color: #409EFF;
+            font-size: 18px;
         }
         .memlist-signature{
             font-size: 17px !important;
@@ -414,6 +414,7 @@
     <div v-if="myTalklist" class="my-talklist">
         <el-container>
             <el-main>
+                <el-row v-if="myTalkResult.length==0"><el-col :span="16" :offset="4"><span>未发表过说说</span></el-col></el-row>
                 <el-row v-for="(result, index) in myTalkResult" :key="result._id">
                     <el-col :span="16" :offset="4">
                         <el-card class="talk-card">
