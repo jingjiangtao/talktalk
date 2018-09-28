@@ -14,7 +14,7 @@
         }
         body{
             font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-            margin:0px;
+            margin:0;
         }
 
         /*main的样式*/
@@ -139,7 +139,6 @@
             width: 15%;
         }
         .card-footer{
-            /*border-top: #ebeef5 1px solid;*/
             padding-top: 10px;
         }
         .card-footer .time{
@@ -161,6 +160,24 @@
             margin-bottom: 5px;
             margin-left: 20px;
         }
+        /*评论列表样式*/
+        .reply-list{
+            margin-top: 10px;
+            font-size: 14px;
+            line-height: 30px;
+            vertical-align: top;
+        }
+        /*评论时间*/
+        .reply-time{
+            font-size: 12px;
+            line-height: 12px;
+        }
+        .reply-list a{
+            color:#409EFF;
+            font-size: 16px;
+            text-decoration: none;
+        }
+
         /*修改密码模态框*/
         #old-pwd,#new-pwd,#ok-new-pwd{
             margin: 15px 0 0;
@@ -239,7 +256,7 @@
 </head>
 
 <body>
-<div id="show-index">
+<div id="show-index" v-cloak>
    
 <div v-if="unlogin">
     <el-container>
@@ -418,8 +435,11 @@
                                             </el-col>
                                         </el-row>
                                         <el-card class="reply-list">
-                                            <div v-for="o in 4" :key="o">
-                                                {{'列表内容 ' + o }}
+                                            <span v-if="result.commentNum==0">还没有评论</span>
+                                            <div v-for="comment in result.commentContent" :key="">
+                                                <a @click="replyToUser(comment)" href="javascript:;">{{comment.replyUser}}：</a>
+                                                <span class="reply-content">{{comment.replyContent}}</span>
+                                                <div class="reply-time">{{(new Date(comment.replyTime)).toLocaleString()}}</div>
                                             </div>
                                         </el-card>
                                     </el-collapse-item>
@@ -472,7 +492,14 @@
                                                class="el-icon-star-off push-right zan">
                                             </i>
                                         </template>
-                                        <div>评论面板</div>
+                                        <el-card class="reply-list">
+                                            <span v-if="result.commentNum==0">还没有评论</span>
+                                            <div v-for="comment in result.commentContent" :key="">
+                                                <a href="javascript:;">{{comment.replyUser}}：</a>
+                                                <span class="reply-content">{{comment.replyContent}}</span>
+                                                <div class="reply-time">{{(new Date(comment.replyTime)).toLocaleString()}}</div>
+                                            </div>
+                                        </el-card>
                                     </el-collapse-item>
                                 </el-collapse>
                             </div>
