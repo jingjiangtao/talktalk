@@ -155,7 +155,12 @@
             font-size: 14px;
             margin-right: 15px;
         }
-
+        /*回复按钮样式*/
+        .reply-btn{
+            margin-top: 5px;
+            margin-bottom: 5px;
+            margin-left: 20px;
+        }
         /*修改密码模态框*/
         #old-pwd,#new-pwd,#ok-new-pwd{
             margin: 15px 0 0;
@@ -399,7 +404,24 @@
                                                class="el-icon-star-off push-right zan">
                                             </i>
                                         </template>
-                                        <div>评论面板</div>
+                                        <div>
+                                            <el-input type="textarea"
+                                                      :rows="3"
+                                                      placeholder="说说你的看法吧"
+                                                      v-model.trim="replyTextarea"
+                                                      maxlength="100">
+                                            </el-input>
+                                        </div>
+                                        <el-row>
+                                            <el-col :span="2" :offset="22">
+                                                <el-button @click="replayBtn(result)" type="success" size="small" class="reply-btn">回复</el-button>
+                                            </el-col>
+                                        </el-row>
+                                        <el-card class="reply-list">
+                                            <div v-for="o in 4" :key="o">
+                                                {{'列表内容 ' + o }}
+                                            </div>
+                                        </el-card>
                                     </el-collapse-item>
                                 </el-collapse>
                             </div>
