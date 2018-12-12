@@ -1,0 +1,7 @@
+node_modules
+.idea
+public/images/*
+!public/images/favicon.ico
+avatar/*
+!avatar/default.jpg
+!avatar/default2.jpg
